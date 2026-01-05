@@ -1,0 +1,20 @@
+{
+  "name": "amiibostore",
+  "version": "1.0.0",
+  "description": "Web de una tienda de amiibos",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LauraMartinezS98/amiiboStore.git"
+  },
+  "author": "Laura Martínez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LauraMartinezS98/amiiboStore/issues"
+  },
+  "homepage": "https://github.com/LauraMartinezS98/amiiboStore#readme",
+  "keywords": []
+}
