@@ -4,7 +4,8 @@
   "description": "Web de una tienda de amiibos",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -16,5 +17,11 @@
     "url": "https://github.com/LauraMartinezS98/amiiboStore/issues"
   },
   "homepage": "https://github.com/LauraMartinezS98/amiiboStore#readme",
-  "keywords": []
+  "keywords": [],
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
 }
