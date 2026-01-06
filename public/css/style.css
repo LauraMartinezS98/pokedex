@@ -1,0 +1,37 @@
+.descuento .titulo {
+    font-size: 2.4rem;
+}
+.descuento .precio {
+    color: #15B9D5;
+    font-size: 3rem;
+}
+
+.proximos-viajes p {
+    font-size: .9rem;
+}
+i {
+    color: #DC135F;
+    font-size: 2rem;
+}
+
+.testimoniales p{
+    font-size: .8rem;
+    font-weight: normal;
+}
+.testimoniales p::before {
+    background-image: url(../img/quote.jpg);
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 40px;
+    content: '';
+    width: 40px;
+    height: 40px;
+    display: block;
+    margin-bottom: 1rem;
+}
+.blockquote-footer {
+    text-align: right;
+    color: #DC135F;
+    font-weight: bold;
+    margin-top: 1rem;
+}
