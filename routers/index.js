@@ -1,25 +1,45 @@
-//Importar el módulo express para crear aplicaciones web
 import express from 'express';
-import {paginaInicio, paginaNosotros, paginaTestimonios, paginaViajes, paginaDetallesViajes, guardarTestimonios} from "../controllers/paginaController.js";
-
 const router = express.Router();
 
-//Creo un endpoint de get en la web
-router.get('/',paginaInicio);
-//res.json({id:1});
+// Importar controladores de PÁGINA
+import {
+    paginaInicio,
+    paginaNosotros,
+    paginaComentarios,
+    paginaPokemons,
+    paginaDetallesPokemons,
+    guardarComentarios,
+    buscador,
+} from "../controllers/paginaController.js";
 
-//Creo un endpoint
+// Importar controladores de USUARIO (Asegúrate de importar soltarPokemon aquí)
+import {
+    paginaPerfil,
+    capturarPokemon,
+    soltarPokemon // <--- IMPORTANTE
+} from '../controllers/usuarioController.js';
+
+
+// --- RUTAS PÚBLICAS ---
+router.get('/', paginaInicio);
 router.get('/nosotros', paginaNosotros);
 
-//Creo un endpoint
-router.get('/testimonios', paginaTestimonios);
+// --- RUTA DEL BUSCADOR  ---
+router.post('/buscador', buscador);
 
-//Creo un endpoint
-router.get('/viajes', paginaViajes);
+// Rutas de Pokemons
+router.get('/pokemons', paginaPokemons);
+router.get('/pokemons/:id', paginaDetallesPokemons);
 
-//Los dos puntos es como un comodin y no repetir páginas
-router.get('/viajes/:slug', paginaDetallesViajes);
+// Rutas de Comentarios
+router.get('/comentarios', paginaComentarios);
+router.post('/comentarios', guardarComentarios);
 
-router.post('/testimonios', guardarTestimonios);
+// --- RUTAS DE USUARIO ---
+router.get('/perfil', paginaPerfil);
+router.post('/pokemons/capturar/:id', capturarPokemon);
+
+// ESTA ES LA RUTA QUE TE FALTABA AQUÍ:
+router.post('/pokemons/soltar/:id', soltarPokemon);
 
 export default router;

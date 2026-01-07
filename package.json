@@ -19,9 +19,13 @@
   "homepage": "https://github.com/LauraMartinezS98/amiiboStore#readme",
   "keywords": [],
   "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
     "mysql2": "^3.16.0",
+    "pug": "^3.0.3",
     "sequelize": "^6.37.7"
   },
   "devDependencies": {

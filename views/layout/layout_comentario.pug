@@ -1,10 +1,27 @@
-.row.testimonios
-    each testimonio in testimonios
-        .col-md-6.col-lg-4.mb-4
-            .card.shadow-lg.border-light
-                .card-body
-                    blockquote.blockquote
-                    p.mb-8.text-center
-                        | "#{testimonio.mensaje}"
-                    footer.blockquote-footer
-                        | #{testimonio.nombre}
+.bg-light.py-5
+    .container
+        h2.text-center.mb-5(style="color: #E60012; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;")
+            | Opiniones de la Comunidad
+
+        .row.justify-content-center
+            each comentario in comentarios
+                //- Usamos col-md-4 para 3 por fila, o col-md-6 para 2 por fila
+                .col-md-4.mb-4.d-flex
+                    //- .h-100 obliga a la card a estirarse al máximo de la fila
+                    //- .w-100 asegura que ocupe todo el ancho de la columna
+                    .card.border-0.shadow-sm.h-100.w-100(style="border-radius: 15px;")
+                        .card-body.p-4.d-flex.flex-column
+                            blockquote.blockquote.mb-0.d-flex.flex-column.h-100
+                                //- flex-grow-1 empuja el footer hacia abajo si el texto es corto
+                                p.mb-4(style="font-size: 1.1rem; color: #444; font-style: italic; line-height: 1.6; flex-grow: 1;")
+                                    | "#{comentario.mensaje}"
+
+                                //- Divisor horizontal
+                                hr.mb-3(style="border-top: 1px solid #eee; width: 100%;")
+
+                                //- Footer siempre alineado al fondo
+                                footer.mt-auto
+                                    span(style="display: block; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; color: #999; font-weight: 700; margin-bottom: 2px;")
+                                        | Entrenador Pokémon
+                                    span(style="font-size: 1.1rem; color: white; font-weight: 800; text-transform: capitalize;")
+                                        | #{comentario.nombre}

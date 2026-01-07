@@ -1,0 +1,32 @@
+extends ../layout/index
+
+block contenido
+    .py-10
+        h1.text-center.my-10 #{pagina}
+
+        if errores
+            div(class="alert alert-danger text-center w-50 mx-auto")
+                each error in errores
+                    p.mb-0= error.mensaje
+
+        .row.justify-content-center.mt-5
+            .col-md-6
+                .card.shadow
+                    .card-body
+                        form(method="POST" action="/auth/registro")
+                            .form-group.mb-3
+                                label(for="nombre") Nombre de Entrenador
+                                input#nombre.form-control(type="text" name="nombre" placeholder="Tu Nombre" value= usuario ? usuario.nombre : '')
+
+                            .form-group.mb-3
+                                label(for="email") Email
+                                input#email.form-control(type="email" name="email" placeholder="Tu Email" value= usuario ? usuario.email : '')
+
+                            .form-group.mb-3
+                                label(for="password") Contraseña
+                                input#password.form-control(type="password" name="password" placeholder="Mínimo 6 caracteres")
+
+                            input(type="submit" value="Crear Cuenta" class="btn btn-danger btn-block w-100")
+
+                        .d-flex.justify-content-between.mt-4
+                            a(href="/auth/login" class="text-secondary text-decoration-none") ¿Ya tienes cuenta? Inicia Sesión

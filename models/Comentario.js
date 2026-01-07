@@ -1,27 +1,14 @@
-import sequelize, {Sequelize} from 'sequelize';
-import db from '../config/db.js';
-export const Viaje = db.define('viaje', {
-    titulo: {
+import Sequelize from "sequelize";
+import db from "../config/bd.js";
+
+export const Comentario = db.define("comentarios", {
+    nombre: {
         type: Sequelize.STRING
     },
-    precio: {
+    correo: {
         type: Sequelize.STRING
     },
-    fecha_ida: {
-        type: Sequelize.DATE
-    },
-    fecha_vuelta: {
-        type: Sequelize.DATE
-    },
-    imagen: {
+    mensaje: {
         type: Sequelize.STRING
     },
-    disponibles: {
-        type: Sequelize.STRING
-    },
-    descripcion: {
-        type: Sequelize.STRING
-    },
-    slug: {
-        type: Sequelize.STRING
-    }});
+});

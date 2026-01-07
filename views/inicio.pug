@@ -1,35 +1,45 @@
 extends ./layout/index
-block slider
-    .slider
-        h1 Río de Janeiro
-        em aventura
+
 block contenido
+    //- SECCIÓN HERO (Encabezado)
+    .jumbotron.text-white.text-center(style="background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('/img/pokemon-inicio.jpg'); background-size: cover; padding: 80px 0; border-radius: 0;")
+        .container
+            h1.display-4.font-weight-bold Gestión Pokémon Avanzada
+            p.lead Analiza estadísticas, construye tu equipo y domina la liga.
+            a.btn.btn-danger.btn-lg.rounded-pill.mt-3(href="/pokemons" style="background-color: #E60012; border: none;") Ver Pokédex Completa
+
     main.container.mt-5
-        h2.text-center.mb-5 Sobre Nosotros
-        .row.mb-5
-            //- Columna para el texto a la izquierda
-            .col-md-6
-                p
-                    | Lorem ipsum dolor sit amet consectetur adipiscing elit fermentum, imperdiet parturient consequat commodo primis nullam conubia quis dis, felis vel lacus dignissim habitasse augue pharetra. Sapien dui eu tristique vitae mauris mattis porttitor, platea elementum congue faucibus interdum quisque, ultricies aptent ac fringilla nisl nunc.
-                p
-                    | Tortor lectus habitant etiam integer potenti molestie nulla habitasse, risus a semper maecenas facilisi in ultricies sem, gravida parturient varius venenatis imperdiet sociosqu natoque. Primis auctor sollicitudin justo nisl augue sagittis e
+        //- NUEVA SECCIÓN: CARACTERÍSTICAS (Sustituye al carrusel)
+        .row.text-center.mb-5
+            .col-md-4
+                .p-4
+                    img.mb-3(src="https://upload.wikimedia.org/wikipedia/commons/5/53/Pok%C3%A9_Ball_icon.svg" width="60")
+                    h4 Captura
+                    p.text-muted Registra tus Pokémon favoritos y añádelos a tu equipo personal.
+            .col-md-4
+                .p-4
+                    //- Icono de gráfico o estadísticas
+                    svg.mb-3(xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#E60012" stroke-width="2" stroke-linecap="round" stroke-linejoin="round")
+                        line(x1="18" y1="20" x2="18" y2="10")
+                        line(x1="12" y1="20" x2="12" y2="4")
+                        line(x1="6" y1="20" x2="6" y2="14")
+                    h4 Analiza
+                    p.text-muted Revisa pesos, alturas y estadísticas base para crear estrategias.
+            .col-md-4
+                .p-4
+                    svg.mb-3(xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#E60012" stroke-width="2" stroke-linecap="round" stroke-linejoin="round")
+                        path(d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2")
+                        circle(cx="9" cy="7" r="4")
+                        path(d="M23 21v-2a4 4 0 0 0-3-3.87")
+                        path(d="M16 3.13a4 4 0 0 1 0 7.75")
+                    h4 Comparte
+                    p.text-muted Deja tus comentarios y lee las opiniones de otros entrenadores.
 
-            //- Columna para la imagen a la derecha
-            .col-md-6
-                img(src="/img/inicio_nosotros.jpg", alt="Imagen de Nosotros", class="img-fluid rounded")
+        hr.my-5
 
-        include ./layout/layout_viajes
-    .descuento
+
+    //- SECCIÓN COMENTARIOS
+    .bg-light.py-5.mt-5
         .container
             .row
-                .col-md-6
-                    .contenido
-                        h3 5% de Descuento
-                        p.titulo Viaje a Canadá
-                        p.fecha 20 de Marzo de 2025 - 29 de Marzo de 2025
-                        p.precio 2.500 €
-
-
-    .container
-        h2.mt-5.text-center TESTIMONIOS
-        include ./layout/layout_testimonio
+                include ./layout/layout_comentario

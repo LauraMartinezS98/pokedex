@@ -1,0 +1,99 @@
+extends ./layout/index
+
+block contenido
+    //- Diccionario para traducir de Inglés (API) a Español
+    -
+        const traducciones = {
+            normal: 'Normal', fighting: 'Lucha', flying: 'Volador',
+            poison: 'Veneno', ground: 'Tierra', rock: 'Roca',
+            bug: 'Bicho', ghost: 'Fantasma', steel: 'Acero',
+            fire: 'Fuego', water: 'Agua', grass: 'Planta',
+            electric: 'Eléctrico', psychic: 'Psíquico', ice: 'Hielo',
+            dragon: 'Dragón', dark: 'Siniestro', fairy: 'Hada',
+            unknown: 'Desconocido', shadow: 'Sombra'
+        }
+
+    main.container.mt-5
+        .row
+            //- COLUMNA IZQUIERDA: IMAGEN
+            .col-md-5
+                .imagen-wrapper.shadow-sm.mb-4(style="background-color: #f8f9fa; padding: 40px; border-radius: 15px; text-align: center;")
+                    //- Usamos pokemon.imagen (que ahora viene en HD desde el controlador)
+                    img.img-fluid(src=pokemon.imagen, alt=`Imagen de ${pokemon.nombre}` style="max-height: 400px; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'")
+
+            //- COLUMNA DERECHA: INFORMACIÓN
+            .col-md-7
+                //- NOMBRE
+                h1.text-capitalize(style="color: #E60012; font-size: 3rem; font-family: 'Staatliches', cursive;") #{pokemon.nombre}
+
+                //- Nº POKÉDEX
+                p.mt-4.d-flex.align-items-center
+                    svg.mr-2(xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewbox='0 0 24 24' stroke-width='1.5' stroke='#E60012' fill='none' stroke-linecap='round' stroke-linejoin='round')
+                        path(stroke='none' d='M0 0h24v24H0z' fill='none')
+                        line(x1='5' y1='9' x2='19' y2='9')
+                        line(x1='5' y1='15' x2='19' y2='15')
+                        line(x1='11' y1='4' x2='7' y2='20')
+                        line(x1='17' y1='4' x2='13' y2='20')
+                    span(style="font-size: 1.2rem; margin-left: 10px;")
+                        strong Nº Pokédex Nacional:
+                        | #{pokemon.id}
+
+                //- REGIÓN
+                p.d-flex.align-items-center
+                    svg.mr-2(xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewbox='0 0 24 24' stroke-width='1.5' stroke='#E60012' fill='none' stroke-linecap='round' stroke-linejoin='round')
+                        path(stroke='none' d='M0 0h24v24H0z' fill='none')
+                        circle(cx='12' cy='11' r='3')
+                        path(d='M17.657 16.657l-4.243 4.243a3 3 0 0 1 -4.242 0l-4.243 -4.243a8 8 0 1 1 11.314 0z')
+                    span(style="font-size: 1.2rem; margin-left: 10px;")
+                        strong Región de Origen:
+                        | Kanto
+
+                hr.mt-5
+
+                //- SECCIÓN DE TIPOS
+                .row.mt-4
+                    .col-12
+                        h5.mb-3(style="font-weight: bold; color: #555;") Tipo:
+                        //- El controlador nos envía 'pokemon.tipo' (ej: 'fire'). Traducimos.
+                        span.badge.badge-pill.mr-2.px-3.py-2.text-uppercase(style="background-color: #E60012; color: white; font-size: 0.9rem; letter-spacing: 1px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);") #{traducciones[pokemon.tipo] || pokemon.tipo}
+
+                //- SECCIÓN ESTADÍSTICAS (Sin efecto hover para no marear)
+                .row.mt-4
+                    .col-6
+                        .card.shadow-sm.p-3.text-center(style="border: none; background-color: #f8f9fa; transform: none; transition: none; cursor: default;")
+                            h6.text-muted Peso
+                            p.font-weight-bold.mb-0 #{pokemon.weight ? pokemon.weight / 10 : '??'} kg
+                    .col-6
+                        .card.shadow-sm.p-3.text-center(style="border: none; background-color: #f8f9fa; transform: none; transition: none; cursor: default;")
+                            h6.text-muted Altura
+                            p.font-weight-bold.mb-0 #{pokemon.height ? pokemon.height / 10 : '??'} m
+
+                //- DESCRIPCIÓN
+                if descripcion
+                    h3.mt-5.mb-3 Entrada de la Pokédex
+                    p.text-justify(style="font-size: 1.1rem; line-height: 1.6; color: #555;")
+                        | #{descripcion}
+
+                //- === ZONA DE ACCIONES (CAPTURAR / LOGIN) ===
+                .d-flex.flex-column.mt-5
+                    if usuario
+                        //- OPCIÓN A: Usuario Logueado -> Botón Capturar
+                        form(action=`/pokemons/capturar/${pokemon.id}` method="POST")
+                            button.btn.btn-danger.btn-block.btn-lg.font-weight-bold.shadow-sm(
+                                type="submit"
+                                style="border-radius: 50px; text-transform: uppercase; letter-spacing: 2px; transition: transform 0.2s;"
+                                onmouseover="this.style.transform='scale(1.02)'"
+                                onmouseout="this.style.transform='scale(1)'"
+                            )
+                                span(style="font-size: 1.5rem; margin-right: 10px;") ◎
+                                | ¡Capturar Pokémon!
+                    else
+                        //- OPCIÓN B: Usuario NO Logueado -> Aviso
+                        .alert.alert-warning.text-center.shadow-sm(role="alert")
+                            strong ¡Alto ahí, entrenador!
+                            | Para capturar a #{pokemon.nombre}, necesitas
+                            a.font-weight-bold(href="/auth/login" style="color: #856404; text-decoration: underline;") iniciar sesión
+                            | .
+
+                    //- Botón Volver (Siempre visible)
+                    a.btn.btn-outline-secondary.btn-block.mt-3.rounded-pill(href="/pokemons") Volver a la Pokédex

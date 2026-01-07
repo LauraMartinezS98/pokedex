@@ -2,27 +2,68 @@ extends layout/index
 
 block contenido
     main.container.mt-5
-        .row
+        .row.align-items-center
             .col-md-5
-                img(src="/img/nosotros.jpg", alt="", class="img-fluid")
-            .col-md-7
-                h1 #{pagina}
-                blockquote Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam vel sem sit amet magna cursus tempus. Phasellus consectetur felis ut ex lacinia finibus. Pellentesque vel dolor id nisi condimentum blandit in sagittis tellus. Sed finibus mi et ante mattis, id varius odio ullamcorper. Integer mollis nibh a placerat ultricies. Proin viverra lobortis iaculis. In consectetur nisi id vulputate placerat.
-                p Suspendisse lectus ex, dictum eu augue vitae, scelerisque finibus orci. Integer aliquam nisi quis libero rutrum iaculis ut eu magna. Nam blandit velit turpis, eu faucibus lorem porta vitae. Mauris ex erat, consequat et vestibulum vel, convallis ut odio. Nunc sit amet velit sit amet ligula convallis eleifend. Donec non urna nulla. Vestibulum vitae aliquet nunc, sit amet tempus nulla. Cras rhoncus lacinia mi at facilisis. Sed dui neque, eleifend in euismod a, consectetur eget eros. Ut vitae euismod dui. Quisque ut ligula porta, ornare nisi eget, elementum augue. Nunc euismod tortor mi, sed volutpat erat feugiat eget. Praesent dictum, lacus vel hendrerit laoreet, enim diam dictum sem, vitae ornare orci magna vitae elit.
-                p In vulputate a neque vel ornare. Nunc augue arcu, molestie vel iaculis in, ultrices eu urna. Donec vehicula, nisl a euismod scelerisque, urna velit pretium leo, porttitor semper mauris enim eget dui. Duis elementum dolor ac sapien convallis, eu mollis diam malesuada. Praesent ultrices, justo et dapibus blandit, magna sem auctor urna, luctus placerat justo odio at leo. Curabitur ligula magna, dignissim eget turpis vitae, interdum dictum nisi. Maecenas nec ultrices sapien. Sed augue ipsum, hendrerit sit amet neque in, pharetra faucibus orci. Praesent eu efficitur urna. Donec quis tristique velit, in vestibulum nunc. Fusce consectetur rhoncus tortor. Donec varius felis nec dictum finibus. Etiam eleifend lectus eu pretium maximus.
+                //- IMAGEN
+                img(src="/img/pokemon.jpg", alt="Entrenadores Pokémon", class="img-fluid mb-4 rounded shadow-lg")
 
+            .col-md-7
+                h1.mb-3 #{pagina}
+
+                //- CITA (La mantenemos porque da personalidad)
+                blockquote.blockquote.text-muted.mb-4(style="border-left: 5px solid #E60012; padding-left: 15px;")
+                    em "La victoria no depende solo de la fuerza, sino de conocer a tu equipo."
+
+                //- TEXTO
+                p Hemos creado el laboratorio definitivo para entrenadores que quieren dejar de adivinar y empezar a ganar.
+
+                //- LISTA DE VENTAJAS (Mucho más visual que un párrafo)
+                ul.list-unstyled.mt-4
+                    li.mb-2.d-flex.align-items-center
+                        span.text-danger.mr-2(style="font-size: 1.2rem;") ●
+                        span <strong>Tu Dream Team:</strong> Diseña y gestiona tu equipo de 6 perfecto.
+                    li.mb-2.d-flex.align-items-center
+                        span.text-danger.mr-2(style="font-size: 1.2rem;") ●
+                        span <strong>Datos Reales:</strong> Información útil y rápida, sin rodeos.
+                    li.mb-2.d-flex.align-items-center
+                        span.text-danger.mr-2(style="font-size: 1.2rem;") ●
+                        span <strong>Estrategia Pura:</strong> Analiza sinergias y prepárate para la Liga.
     .listado-iconos
-        .container.mt-5.py-5.text-xl-center
+        .container.mt-5.py-5.text-center
             .row
                 .col-md-4
-                    img(src="/img/icono_seguridad.svg", alt="icono seguridad", class="img-fluid mb-4")
-                    h2.mb-4 Seguridad
-                    p Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                    //- Icono: Pokeballs (Tu equipo de 6)
+                    svg.mb-4(xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewbox='0 0 24 24' stroke-width='1.5' stroke='#E60012' fill='none' stroke-linecap='round' stroke-linejoin='round')
+                        path(stroke='none' d='M0 0h24v24H0z' fill='none')
+                        circle(cx='9' cy='9' r='9' transform='translate(3 3)')
+                        circle(cx='12' cy='12' r='3')
+                        path(d='M3 12h6m6 0h6')
+
+                    h2.mb-4 Team Builder
+                    p La joya de la corona. Selecciona tus 6 Pokémon favoritos, balancea sus tipos y crea el escuadrón definitivo.
+
                 .col-md-4
-                    img(src="/img/icono_destinos.svg", alt="icono destinos", class="img-fluid mb-4")
-                    h2.mb-4 Mejores Destinos
-                    p Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                    //- Icono: Lupa/Gráfica (Datos precisos)
+                    svg.mb-4(xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewbox='0 0 24 24' stroke-width='1.5' stroke='#E60012' fill='none' stroke-linecap='round' stroke-linejoin='round')
+                        path(stroke='none' d='M0 0h24v24H0z' fill='none')
+                        circle(cx='10' cy='10' r='7')
+                        line(x1='21' y1='21' x2='15' y2='15')
+                        line(x1='10' y1='13' x2='10' y2='13.01')
+                        path(d='M10 10a3 5 0 0 1 3 -2')
+
+                    h2.mb-4 Datos Precisos
+                    p Información detallada y actualizada de la Pokédex Nacional. Consulta tipos, estadísticas y evoluciones al instante.
+
                 .col-md-4
-                    img(src="/img/icono_precios.svg", alt="icono precios", class="img-fluid mb-4")
-                    h2.mb-4 Los mejores Destinos
-                    p Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                    //- Icono: Trofeo/Estrategia
+                    svg.mb-4(xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewbox='0 0 24 24' stroke-width='1.5' stroke='#E60012' fill='none' stroke-linecap='round' stroke-linejoin='round')
+                        path(stroke='none' d='M0 0h24v24H0z' fill='none')
+                        line(x1='8' y1='21' x2='16' y2='21')
+                        line(x1='12' y1='17' x2='12' y2='21')
+                        line(x1='7' y1='4' x2='17' y2='4')
+                        path(d='M17 4v8a5 5 0 0 1 -10 0v-8')
+                        circle(cx='5' cy='9' r='2')
+                        circle(cx='19' cy='9' r='2')
+
+                    h2.mb-4 Rumbo a la Cima
+                    p Planifica tu estrategia antes del combate. Conoce tus debilidades y fortalezas para que ningún gimnasio se te resista.

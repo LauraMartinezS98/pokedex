@@ -3,30 +3,38 @@ extends ./layout/index
 block contenido
     main.container.mt-5
         h1.text-center.mt-5 #{pagina}
-        blockquote.text-center.mb-5
-            p
-                | Lee sobre nuestros clientes y sus expreciencias
 
-            include ./layout/layout_testimonio
+        blockquote.text-center.mb-5
+            p.lead
+                | Lee las opiniones de otros coleccionistas de Nintendo
+
+            //- AQUÍ CARGAMOS LAS TARJETAS QUE HICIMOS ANTES
+            include ./layout/layout_comentario
+
         .row
             .col-md-12
-                h2.d-block.w-100.text-center Agrega un Testimonio
+                h2.d-block.w-100.text-center.mt-5 Deja tu Comentario
 
+                //- BLOQUE DE ERRORES (Si el usuario se deja algo en blanco)
                 if(errores)
                     each error in errores
-                        .alert.col.alert-danger.text-center=error.mensaje
+                        .alert.col.alert-danger.text-center.mb-2= error.mensaje
 
-        .row.justify-content-center.col
+        .row.justify-content-center.col.mb-5
             .col-md-8
-                form(action="/testimonios" method="POST")
+                //- IMPORTANTE: La acción debe apuntar a la ruta que definimos en router/index.js
+                form(action="/comentarios" method="POST")
                     .form-group
                         label(style="font-weight: bold;", for="nombre") Nombre
-                        input#nombre(type="text", placeholder="Tu nombre", name="nombre", class="form-control", value=nombre)
+                        input#nombre(type="text", placeholder="Tu Nickname", name="nombre", class="form-control", value= nombre)
+
                     .form-group
                         label(style="font-weight: bold;", for="correo") Correo Electrónico
-                        input#correo(type="text", placeholder="Tu correo electrónico", name="correo", class="form-control", value=correo)
+                        input#correo(type="text", placeholder="tu@correo.com", name="correo", class="form-control", value= correo)
+
                     .form-group
                         label(style="font-weight: bold;", for="mensaje") Mensaje
-                        textarea#mensaje(class="form-control", name="mensaje", placeholder="Tu Mensaje", rows=3)=mensaje
+                        textarea#mensaje(class="form-control", name="mensaje", placeholder="¿Qué te parece esta Pokédex?", rows=3)= mensaje
 
-                    input.btn.btn-success.btn-block(type="submit")
+                    //- BOTÓN ROJO NINTENDO
+                    input.btn.btn-nintendo.btn-block(type="submit" value="Enviar Comentario")

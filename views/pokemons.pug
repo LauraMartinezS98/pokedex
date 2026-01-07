@@ -1,0 +1,17 @@
+extends ./layout/index
+
+block contenido
+    main.container.mt-5
+        h1.text-center.mb-5 #{pagina}
+
+        .row.proximos-viajes
+            each pokemon in pokemons
+                .col-md-6.col-lg-4.mb-4
+                    .card
+                        img.card-img-top(src=pokemon.imagen alt=`Imagen de ${pokemon.nombre}`)
+                        .card-body
+                            h2.card-title.text-capitalize= pokemon.nombre
+                            p.card-text
+                                | #Pokedéx:
+                                span= pokemon.id
+                            a.btn.btn-danger.btn-block(href=`/pokemons/${pokemon.id}`) Ver Detalles

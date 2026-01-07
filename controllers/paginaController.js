@@ -1,131 +1,165 @@
-import {Viaje} from "../models/Viaje.js";
-import {Testimonial} from "../models/Testimonio.js";
+import Pokemon from "../models/Pokemon.js";
+import { Comentario } from "../models/Comentario.js";
 
-const paginaInicio=async (req, res) => {
-    //res.send("inicio")
+// --- PÁGINA DE INICIO ---
+const paginaInicio = async (req, res) => {
+    try {
+        const promiseDB = [
+            Comentario.findAll({ limit: 3, order: [['id', 'DESC']] })
+        ];
 
-    const promiseDB=[];
-    promiseDB.push(Viaje.findAll({limit:3}));
-    promiseDB.push(Testimonial.findAll({
-        limit:3,
-        order: [['Id', 'DESC']],
-    }));
-
-    //Consultar 3 viajes de modelo de viaje
-    try{
-        const resultado = await  Promise.all(promiseDB);
+        const [ comentarios] = await Promise.all(promiseDB);
 
         res.render('inicio', {
             pagina: 'Inicio',
-            clase:'home',
-            viajes: resultado[0],
-            testimonios: resultado[1],
+            clase: 'home',
+
+            comentarios
         });
-    }catch(err){
+    } catch (err) {
         console.log(err);
+        res.render('inicio', { pagina: 'Inicio', pokemons: [], comentarios: [] });
     }
 }
 
-const paginaNosotros=(req, res) => {
-    res.render('nosotros', {
-        pagina: 'Nosotros',
-    });
+// --- PÁGINA NOSOTROS ---
+const paginaNosotros = (req, res) => {
+    res.render('nosotros', { pagina: 'Nosotros' });
 }
 
-const paginaViajes= async (req, res) => {
-    //Consultar la bbdd
-    const viajes = await Viaje.findAll();
-    console.log(viajes);
+// --- PÁGINA POKEMONS (TIENDA) ---
+// La hemos renombrado para que coincida con tu temática
+const paginaPokemons = async (req, res) => {
 
-    res.render('viajes', {
-        pagina: 'Viajes Disponibles',
-        viajes: viajes,
-    });
-}
+    let pokemons = [];
 
-const paginaTestimonios = async (req, res) => {
-    try{
-        const testimonios = await Testimonial.findAll({
-            limit:6,
-            order: [["Id", "DESC"]],
-        });
-        res.render('testimonios', {
-            pagina: 'Testimonios',
-            testimonios: testimonios,
+    try {
+        // 1. Leer de BBDD
+        pokemons = await Pokemon.findAll();
 
-        });
-    }catch(err){
-        console.log(err);
-    }
-}
+        // 2. Si BBDD vacía, llamar a PokéAPI
+        if (pokemons.length === 0) {
+            console.log("BBDD vacía. Capturando 151 Pokémons...");
 
-//Muestra una página por su detalle
-const paginaDetallesViajes=async (req, res) => {
-    // req.params te va a dar los :slug que ponemos al pasarlo del router
-    const {slug} = req.params;
-    //console.log(slug)
-    //por si falla la consulta lo mejor es try catch
-    try{
-        //Me traigo una sola columna y lo hago con un where donde coincide el slug
-        const resultado = await Viaje.findOne({where: {slug}});
-        res.render('viaje', {
-            pagina: 'Información del viaje',
-            resultado: resultado,
-        })
-    }catch (error) {
+            const url = 'https://pokeapi.co/api/v2/pokemon?limit=151';
+            const respuesta = await fetch(url);
+            const resultado = await respuesta.json();
+
+            const datosParaGuardar = resultado.results.map( (pokemon, index) => {
+                const idReal = index + 1;
+                return {
+                    nombre: pokemon.name,
+                    imagen: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${idReal}.png`
+                };
+            });
+
+            await Pokemon.bulkCreate(datosParaGuardar);
+            pokemons = await Pokemon.findAll();
+        }
+
+    } catch (error) {
         console.log(error);
     }
+
+    // Renderizamos 'pokemons' (porque vi en tu foto que tienes el archivo pokemons.pug)
+    res.render('pokemons', {
+        pagina: 'Pokédex Nacional',
+        pokemons: pokemons,
+    });
 }
 
-const guardarTestimonios =  async (req, res) => {
+// --- DETALLE ---
+const paginaDetallesPokemons = async (req, res) => {
+    const { id } = req.params;
 
-    const {nombre, correo, mensaje} = req.body;
+    try {
+        const respuesta = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+        const pokemon = await respuesta.json();
 
-    const errores = [];
+        // --- AÑADE ESTAS LÍNEAS EXACTAMENTE AQUÍ ---
 
-    if (nombre.trim()===''){
-        errores.push({mensaje: 'El nombre está vacío'});
-    }
-    if (correo.trim()===''){
-        errores.push({mensaje: 'El correo está vacío'});
-    }
-    if (mensaje.trim()===''){
-        errores.push({mensaje: 'El mensaje está vacío'});
-    }
+        // 1. Arreglar Imagen
+        pokemon.imagen = pokemon.sprites.other['official-artwork'].front_default;
 
-    if (errores.length>0){ //Debemos volver a la vista y mostrar los errores
+        // 2. Arreglar Nombre
+        pokemon.nombre = pokemon.name;
 
-        const testimonios = await Testimonial.findAll({
-            limit: 6,
-            order: [["Id", "DESC"]],
+        // 3. ARREGLAR TIPO (¡Esta es la que te falta!)
+        // Cogemos el primer tipo de la lista para que la vista lo entienda
+        pokemon.tipo = pokemon.types[0].type.name;
+
+        // -------------------------------------------
+
+        const respuestaEspecie = await fetch(pokemon.species.url);
+        const especie = await respuestaEspecie.json();
+
+        const descripcionObj = especie.flavor_text_entries.find(entry => entry.language.name === 'es');
+        const descripcion = descripcionObj ? descripcionObj.flavor_text.replace(/(\r\n|\n|\r|\f)/gm, " ") : "Sin descripción disponible.";
+
+        res.render('pokemon', {
+            pagina: `Detalles de ${pokemon.nombre}`,
+            pokemon: pokemon,
+            descripcion: descripcion
         });
 
-        res.render('testimonios', {
-            pagina: 'Testimonios',
+    } catch (error) {
+        console.log(error);
+        res.redirect('/pokemons');
+    }
+}
+// --- COMENTARIOS ---
+const paginaComentarios = async (req, res) => {
+    try {
+        const comentarios = await Comentario.findAll({ limit: 6, order: [["id", "DESC"]] });
+        res.render('comentarios', { pagina: 'Comentarios', comentarios: comentarios });
+    } catch (err) {
+        console.log(err);
+        res.render('comentarios', { pagina: 'Comentarios', comentarios: [] });
+    }
+}
+
+const guardarComentarios = async (req, res) => {
+    const { nombre, correo, mensaje } = req.body;
+    const errores = [];
+    if (nombre.trim() === '') errores.push({ mensaje: 'El nombre está vacío' });
+    if (correo.trim() === '') errores.push({ mensaje: 'El correo está vacío' });
+    if (mensaje.trim() === '') errores.push({ mensaje: 'El mensaje está vacío' });
+
+    if (errores.length > 0) {
+        const comentarios = await Comentario.findAll({ limit: 6, order: [["id", "DESC"]] });
+        res.render('comentarios', {
+            pagina: 'Comentarios',
             errores: errores,
             nombre: nombre,
             correo: correo,
             mensaje: mensaje,
-            testimonios: testimonios,
+            comentarios: comentarios,
         })
-    }else{//Almacenar el mensaje en la BBDD
-        try{
-            await Testimonial.create({nombre: nombre, correo: correo,mensaje: mensaje,});
-            res.redirect('/testimonios'); //Guardo en la base de datos y lo envío a la misma vista
-        }catch(error){
+    } else {
+        try {
+            await Comentario.create({ nombre, correo, mensaje });
+            res.redirect('/comentarios');
+        } catch (error) {
             console.log(error);
         }
     }
-
 }
 
 
+const buscador = (req, res) => {
+    const { termino } = req.body;
+    if(!termino) return res.redirect('back');
+    // Redirigimos al detalle del pokemon
+    res.redirect(`/pokemons/${termino.toLowerCase()}`);
+}
 
+// --- EXPORTACIÓN CORRECTA ---
 export {
     paginaInicio,
     paginaNosotros,
-    paginaViajes,
-    paginaTestimonios,
-    paginaDetallesViajes,
-    guardarTestimonios,
+    paginaPokemons,
+    paginaComentarios,
+    paginaDetallesPokemons,
+    guardarComentarios,
+    buscador,
 }

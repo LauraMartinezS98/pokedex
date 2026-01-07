@@ -1,16 +1,24 @@
 doctype html
-html(lang="en")
+html(lang="es")
     head
         meta(charset="UTF-8")
-        meta(name="vistaprincipal" content="width=device-width, initial-scale=1.0")
-        title Titulo de la página
+        //- CORRECCIÓN IMPORTANTE: Se debe llamar 'viewport', no 'vistaprincipal'
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+
+        //- Título dinámico (AmiiboStore | Inicio)
         title #{nombreP} | #{pagina}
+
         link(rel='preconnect' href='https://fonts.googleapis.com')
         link(rel='preconnect' href='https://fonts.gstatic.com' crossorigin='')
-        link(href='https://fonts.googleapis.com/css2?family=Covered+By+Your+Grace&family=Staatliches&display=swap' rel='stylesheet')
+
+        //- HE CAMBIADO LA FUENTE:
+        //- 'Lato': Para los textos normales (limpia, estilo Nintendo)
+        //- 'Staatliches': Para títulos grandes (estilo Gamer)
+        link(href='https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Staatliches&display=swap' rel='stylesheet')
 
         link(rel="stylesheet", href="/css/bootstrap.css")
         link(rel="stylesheet", href="/css/style.css")
+
     body(class=clase)
         include header
         block slider
