@@ -1,22 +1,23 @@
 {
-  "name": "amiibostore",
+  "name": "pokedex",
   "version": "1.0.0",
-  "description": "Web de una tienda de amiibos",
+  "description": "Web de gestion de tu equipo pokemon",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
     "dev": "nodemon index.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/LauraMartinezS98/amiiboStore.git"
+    "url": "git+https://github.com/LauraMartinezS98/pokedex.git"
   },
   "author": "Laura Martínez",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/LauraMartinezS98/amiiboStore/issues"
+    "url": "https://github.com/LauraMartinezS98/pokedex/issues"
   },
-  "homepage": "https://github.com/LauraMartinezS98/amiiboStore#readme",
+  "homepage": "https://github.com/LauraMartinezS98/pokedex#readme",
   "keywords": [],
   "dependencies": {
     "bcrypt": "^6.0.0",
