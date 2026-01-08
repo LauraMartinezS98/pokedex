@@ -1,6 +1,7 @@
 {
   "name": "pokedex",
   "version": "1.0.0",
+  "type": "module",
   "description": "Web de gestion de tu equipo pokemon",
   "main": "index.js",
   "scripts": {
