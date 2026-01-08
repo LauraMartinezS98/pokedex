@@ -4,14 +4,30 @@ block contenido
     main.container.mt-5
         h1.text-center.mb-5 #{pagina}
 
+        //- SECCIÓN DE ALERTAS (Para errores de búsqueda y de generación)
+        if mensajes && mensajes.error
+            .row.justify-content-center
+                .col-md-8
+                    each alerta in mensajes.error
+                        .alert.alert-danger.text-center.py-3.mb-4(role="alert" style="border-radius: 15px; border: none; background-color: #f8d7da; color: #721c24; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.05);")
+                            i.fas.fa-exclamation-triangle.mr-2
+                            | #{alerta}
+
+        //- LISTADO DE POKÉMON
         .row.proximos-viajes
             each pokemon in pokemons
                 .col-md-6.col-lg-4.mb-4
-                    .card
-                        img.card-img-top(src=pokemon.imagen alt=`Imagen de ${pokemon.nombre}`)
-                        .card-body
-                            h2.card-title.text-capitalize= pokemon.nombre
-                            p.card-text
+                    .card.border-0.shadow-sm.h-100(style="border-radius: 15px; overflow: hidden;")
+                        //- Imagen con fondo gris muy suave para resaltar el PNG
+                        img.card-img-top(src=pokemon.imagen alt=`Imagen de ${pokemon.nombre}` style="background-color: #f8f9fa; padding: 20px;")
+
+                        .card-body.d-flex.flex-column
+                            h2.card-title.text-capitalize(style="font-weight: 800; color: #333;")= pokemon.nombre
+
+                            p.card-text(style="color: #999; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px;")
                                 | #Pokedéx:
-                                span= pokemon.id
-                            a.btn.btn-danger.btn-block(href=`/pokemons/${pokemon.id}`) Ver Detalles
+                                span.ml-1(style="color: #E60012; font-weight: 800;")= pokemon.id
+
+                            //- Botón estilizado al estilo Nintendo
+                            a.btn.btn-danger.btn-block.rounded-pill.mt-auto(href=`/pokemons/${pokemon.id}` style="background-color: #E60012; border: none; font-weight: bold; padding: 10px; transition: all 0.3s ease;")
+                                | Ver Detalles

@@ -147,12 +147,22 @@ const guardarComentarios = async (req, res) => {
 
 
 const buscador = (req, res) => {
+    // Extraemos el término
     const { termino } = req.body;
-    if(!termino) return res.redirect('back');
-    // Redirigimos al detalle del pokemon
-    res.redirect(`/pokemons/${termino.toLowerCase()}`);
-}
 
+    // VALIDACIÓN BLINDADA:
+    // Comprobamos si no existe, si es undefined, o si solo tiene espacios
+    if (!termino || termino === undefined || termino.trim() === "") {
+        req.flash('error', 'No has introducido nada en la búsqueda');
+
+        // Usamos una ruta fija en lugar de 'back' para evitar errores de cabeceras
+        return res.redirect('/pokemons');
+    }
+
+    // Si llegamos aquí, es que hay texto.
+    // IMPORTANTE: Asegúrate de que la ruta /pokemons/nombre exista
+    return res.redirect(`/pokemons/${termino.toLowerCase().trim()}`);
+}
 // --- EXPORTACIÓN CORRECTA ---
 export {
     paginaInicio,

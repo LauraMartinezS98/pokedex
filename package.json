@@ -20,9 +20,11 @@
   "keywords": [],
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.7",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
+    "express-session": "^1.18.2",
     "jsonwebtoken": "^9.0.3",
     "mysql2": "^3.16.0",
     "pug": "^3.0.3",

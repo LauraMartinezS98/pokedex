@@ -96,33 +96,26 @@ const cerrarSesion = (req, res) => {
 // --- GUARDAR POKEMON (CAPTURAR) ---
 const capturarPokemon = async (req, res) => {
     const { id } = req.params;
-
-    if(!req.usuario) return res.redirect('/auth/login');
-
     const usuarioId = req.usuario.id;
 
     try {
-        // 1. Verificar si ya tiene 6 pokemons
-        const totalEquipo = await Equipo.count({ where: { usuarioId } });
+        const pokemonIdNum = parseInt(id);
 
-        if (totalEquipo >= 6) {
-            console.log("Equipo lleno");
+        // --- VALIDACIÓN DE GENERACIÓN ---
+        if (pokemonIdNum < 1 || pokemonIdNum > 151) {
+            // Enviamos el mensaje de error a la vista
+            req.flash('error', 'Este pokemon no puede ser capturado, no es de la primera generación');
+            return res.redirect('/pokemons');
+        }
+
+        // --- VALIDACIÓN DE EQUIPO ---
+        const conteo = await Equipo.count({ where: { usuarioId } });
+        if (conteo >= 6) {
+            req.flash('error', 'Tu equipo ya está lleno (máximo 6 Pokémon)');
             return res.redirect('/perfil');
         }
 
-        // 2. Verificar duplicados
-        const yaLoTiene = await Equipo.findOne({ where: { usuarioId, pokemonId: id } });
-        if (yaLoTiene) {
-            console.log("Ya tienes este pokemon");
-            return res.redirect('/perfil');
-        }
-
-        // 3. Crear el registro
-        await Equipo.create({
-            usuarioId,
-            pokemonId: id
-        });
-
+        await Equipo.create({ usuarioId, pokemonId: id });
         res.redirect('/perfil');
 
     } catch (error) {
@@ -130,7 +123,6 @@ const capturarPokemon = async (req, res) => {
         res.redirect('/pokemons');
     }
 }
-
 // --- SOLTAR POKEMON (BORRAR DEL EQUIPO) ---
 const soltarPokemon = async (req, res) => {
     const { id } = req.params;
