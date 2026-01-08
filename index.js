@@ -4,59 +4,67 @@ import session from 'express-session';
 import flash from 'connect-flash';
 import jwt from 'jsonwebtoken';
 import db from './config/bd.js';
-import './models/Usuario.js';
 import router from './routers/index.js';
 import usuarioRoutes from './routers/usuarioRoutes.js';
+
+// Importación de modelos para sincronización
+import './models/Usuario.js';
 import './models/Equipo.js';
 
 const app = express();
 
-// 1. Conectar a la base de datos
+/**
+ * CONFIGURACIÓN DE BASE DE DATOS
+ */
 db.authenticate()
     .then(() => db.sync())
     .then(() => console.log('Base de datos conectada y tablas sincronizadas'))
-    .catch(error => console.log(error));
+    .catch(error => console.error('Error de conexión a la BD:', error));
 
-// 2. Definir puerto
+/**
+ * CONFIGURACIÓN DEL SERVIDOR Y MIDDLEWARES
+ */
 const port = process.env.PORT || 4000;
 
-// 3. Habilitar PUG
+// Motor de plantillas
 app.set('view engine', 'pug');
 
-// 4. Habilitar lectura de formularios y Cookies
-app.use(express.urlencoded({extended: true}));
+// Procesamiento de datos y cookies
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// --- CONFIGURACIÓN DE SESIÓN (Indispensable para Flash) ---
+// Configuración de Sesión y Mensajes Flash (Persistencia temporal)
 app.use(session({
-    secret: 'palabrasecreta', // Puedes usar process.env.JWT_SECRET
+    secret: process.env.SESSION_SECRET || 'palabrasecreta',
     resave: false,
     saveUninitialized: false
 }));
-
-// --- HABILITAR FLASH ---
 app.use(flash());
 
-// 5. Definir la carpeta publica
+// Carpeta de recursos estáticos
 app.use(express.static('public'));
 
-// 6. Middleware Propio (Variables Globales, Sesión y Mensajes)
+/**
+ * MIDDLEWARE GLOBAL
+ * Gestiona variables locales, mensajes de sesión e identidad del usuario
+ */
+
 app.use((req, res, next) => {
-    // A) Variables generales
+    // 1. Variables de utilidad para las vistas
     const year = new Date();
     res.locals.añoActual = year.getFullYear();
     res.locals.nombreSitio = "PokéTool";
 
-    // B) PASAR MENSAJES FLASH A PUG (Esto es lo que hace que salga la alerta)
-    // Se asegura de que res.locals.mensajes contenga los errores de req.flash()
+    // 2. Persistencia de mensajes Flash a nivel local (Alertas)
     res.locals.mensajes = req.flash();
 
-    // C) Lógica para identificar al usuario
+    // 3. Verificación de identidad mediante JWT
     const token = req.cookies._token;
 
-    if(token) {
+    if (token) {
         try {
             const decoded = jwt.verify(token, process.env.JWT_SECRET || 'palabraSecreta');
+            // Almacenamos en locals para PUG y en req para los controladores
             res.locals.usuario = decoded;
             req.usuario = decoded;
         } catch (error) {
@@ -71,11 +79,12 @@ app.use((req, res, next) => {
     next();
 });
 
-// 7. Routing
+/**
+ * DEFINICIÓN DE RUTAS
+ */
 app.use('/', router);
 app.use('/auth', usuarioRoutes);
 
-// 8. Arrancar
 app.listen(port, () => {
-    console.log(`El Servidor esta funcionando en el puerto ${port}`);
+    console.log(`El Servidor está funcionando en el puerto ${port}`);
 });

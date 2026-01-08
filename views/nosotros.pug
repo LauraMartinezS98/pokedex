@@ -2,68 +2,60 @@ extends layout/index
 
 block contenido
     main.container.mt-5
+        //- SECCIÓN: QUIÉNES SOMOS
         .row.align-items-center
             .col-md-5
-                //- IMAGEN
-                img(src="/img/pokemon.jpg", alt="Entrenadores Pokémon", class="img-fluid mb-4 rounded shadow-lg")
+                img(src="/img/pokemon.jpg", alt="Entrenadores Pokémon", class="img-fluid mb-4 rounded-xl shadow-lg" style="border-radius: 20px;")
 
             .col-md-7
-                h1.mb-3 #{pagina}
+                h1.mb-3.font-weight-bold #{pagina}
 
-                //- CITA (La mantenemos porque da personalidad)
-                blockquote.blockquote.text-muted.mb-4(style="border-left: 5px solid #E60012; padding-left: 15px;")
-                    em "La victoria no depende solo de la fuerza, sino de conocer a tu equipo."
+                blockquote.blockquote.text-muted.mb-4(style="border-left: 5px solid #E60012; padding-left: 15px; font-style: italic;")
+                    | "La victoria no depende solo de la fuerza, sino de conocer a tu equipo."
 
-                //- TEXTO
-                p Hemos creado el laboratorio definitivo para entrenadores que quieren dejar de adivinar y empezar a ganar.
+                p Hemos desarrollado el laboratorio definitivo para entrenadores que buscan optimizar su rendimiento y dominar la Liga Pokémon mediante el análisis de datos.
 
-                //- LISTA DE VENTAJAS (Mucho más visual que un párrafo)
+                //- Ventajas competitivas de la plataforma
                 ul.list-unstyled.mt-4
-                    li.mb-2.d-flex.align-items-center
-                        span.text-danger.mr-2(style="font-size: 1.2rem;") ●
-                        span <strong>Tu Dream Team:</strong> Diseña y gestiona tu equipo de 6 perfecto.
-                    li.mb-2.d-flex.align-items-center
-                        span.text-danger.mr-2(style="font-size: 1.2rem;") ●
-                        span <strong>Datos Reales:</strong> Información útil y rápida, sin rodeos.
-                    li.mb-2.d-flex.align-items-center
-                        span.text-danger.mr-2(style="font-size: 1.2rem;") ●
-                        span <strong>Estrategia Pura:</strong> Analiza sinergias y prepárate para la Liga.
-    .listado-iconos
-        .container.mt-5.py-5.text-center
+                    li.mb-3.d-flex.align-items-center
+                        i.fas.fa-check-circle.text-danger.mr-3
+                        span <strong>Tu Dream Team:</strong> Gestión avanzada de tu equipo de 6 integrantes.
+                    li.mb-3.d-flex.align-items-center
+                        i.fas.fa-check-circle.text-danger.mr-3
+                        span <strong>Datos Reales:</strong> Acceso directo a la PokéAPI con estadísticas precisas.
+                    li.mb-3.d-flex.align-items-center
+                        i.fas.fa-check-circle.text-danger.mr-3
+                        span <strong>Estrategia Pura:</strong> Análisis de sinergias y tipos dominantes.
+
+    //- SECCIÓN: CARACTERÍSTICAS TÉCNICAS
+    .listado-iconos.bg-light.mt-5.py-5
+        .container.text-center
             .row
-                .col-md-4
-                    //- Icono: Pokeballs (Tu equipo de 6)
+                //- Característica 1: Team Builder
+                .col-md-4.mb-4
                     svg.mb-4(xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewbox='0 0 24 24' stroke-width='1.5' stroke='#E60012' fill='none' stroke-linecap='round' stroke-linejoin='round')
-                        path(stroke='none' d='M0 0h24v24H0z' fill='none')
-                        circle(cx='9' cy='9' r='9' transform='translate(3 3)')
+                        circle(cx='12' cy='12' r='9')
                         circle(cx='12' cy='12' r='3')
-                        path(d='M3 12h6m6 0h6')
+                        line(x1='3' y1='12' x2='9' y2='12')
+                        line(x1='15' y1='12' x2='21' y2='12')
+                    h2.mb-3 Team Builder
+                    p Selecciona tus 6 Pokémon favoritos, balancea sus tipos y crea el escuadrón definitivo para la competición.
 
-                    h2.mb-4 Team Builder
-                    p La joya de la corona. Selecciona tus 6 Pokémon favoritos, balancea sus tipos y crea el escuadrón definitivo.
-
-                .col-md-4
-                    //- Icono: Lupa/Gráfica (Datos precisos)
+                //- Característica 2: Datos
+                .col-md-4.mb-4
                     svg.mb-4(xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewbox='0 0 24 24' stroke-width='1.5' stroke='#E60012' fill='none' stroke-linecap='round' stroke-linejoin='round')
-                        path(stroke='none' d='M0 0h24v24H0z' fill='none')
                         circle(cx='10' cy='10' r='7')
                         line(x1='21' y1='21' x2='15' y2='15')
-                        line(x1='10' y1='13' x2='10' y2='13.01')
                         path(d='M10 10a3 5 0 0 1 3 -2')
+                    h2.mb-3 Datos Precisos
+                    p Consulta la Pokédex Nacional en tiempo real. Información detallada sobre tipos, pesos y alturas base.
 
-                    h2.mb-4 Datos Precisos
-                    p Información detallada y actualizada de la Pokédex Nacional. Consulta tipos, estadísticas y evoluciones al instante.
-
-                .col-md-4
-                    //- Icono: Trofeo/Estrategia
+                //- Característica 3: Estrategia
+                .col-md-4.mb-4
                     svg.mb-4(xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewbox='0 0 24 24' stroke-width='1.5' stroke='#E60012' fill='none' stroke-linecap='round' stroke-linejoin='round')
-                        path(stroke='none' d='M0 0h24v24H0z' fill='none')
                         line(x1='8' y1='21' x2='16' y2='21')
                         line(x1='12' y1='17' x2='12' y2='21')
                         line(x1='7' y1='4' x2='17' y2='4')
                         path(d='M17 4v8a5 5 0 0 1 -10 0v-8')
-                        circle(cx='5' cy='9' r='2')
-                        circle(cx='19' cy='9' r='2')
-
-                    h2.mb-4 Rumbo a la Cima
-                    p Planifica tu estrategia antes del combate. Conoce tus debilidades y fortalezas para que ningún gimnasio se te resista.
+                    h2.mb-3 Rumbo a la Cima
+                    p Planifica tus enfrentamientos conociendo tus debilidades y fortalezas antes de entrar al gimnasio.

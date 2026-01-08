@@ -1,19 +1,20 @@
 import Pokemon from "../models/Pokemon.js";
 import { Comentario } from "../models/Comentario.js";
 
-// --- PÁGINA DE INICIO ---
+/**
+ * Muestra la página de inicio con los últimos 3 comentarios
+ */
 const paginaInicio = async (req, res) => {
     try {
-        const promiseDB = [
-            Comentario.findAll({ limit: 3, order: [['id', 'DESC']] })
-        ];
-
-        const [ comentarios] = await Promise.all(promiseDB);
+        // Consultamos solo los 3 comentarios más recientes para el feed de inicio
+        const comentarios = await Comentario.findAll({
+            limit: 3,
+            order: [['id', 'DESC']]
+        });
 
         res.render('inicio', {
             pagina: 'Inicio',
             clase: 'home',
-
             comentarios
         });
     } catch (err) {
@@ -22,25 +23,20 @@ const paginaInicio = async (req, res) => {
     }
 }
 
-// --- PÁGINA NOSOTROS ---
 const paginaNosotros = (req, res) => {
     res.render('nosotros', { pagina: 'Nosotros' });
 }
 
-// --- PÁGINA POKEMONS (TIENDA) ---
-// La hemos renombrado para que coincida con tu temática
+/**
+ * Despliega la Pokédex. Si la base de datos está vacía,
+ * realiza el sembrado (seeding) inicial desde PokéAPI.
+ */
 const paginaPokemons = async (req, res) => {
-
-    let pokemons = [];
-
     try {
-        // 1. Leer de BBDD
-        pokemons = await Pokemon.findAll();
+        let pokemons = await Pokemon.findAll();
 
-        // 2. Si BBDD vacía, llamar a PokéAPI
+        // Lógica de Sembrado Automático (First run)
         if (pokemons.length === 0) {
-            console.log("BBDD vacía. Capturando 151 Pokémons...");
-
             const url = 'https://pokeapi.co/api/v2/pokemon?limit=151';
             const respuesta = await fetch(url);
             const resultado = await respuesta.json();
@@ -57,18 +53,20 @@ const paginaPokemons = async (req, res) => {
             pokemons = await Pokemon.findAll();
         }
 
+        res.render('pokemons', {
+            pagina: 'Pokédex Nacional',
+            pokemons
+        });
     } catch (error) {
         console.log(error);
+        res.redirect('/');
     }
-
-    // Renderizamos 'pokemons' (porque vi en tu foto que tienes el archivo pokemons.pug)
-    res.render('pokemons', {
-        pagina: 'Pokédex Nacional',
-        pokemons: pokemons,
-    });
 }
 
-// --- DETALLE ---
+/**
+ * Obtiene detalles específicos de un Pokémon desde la API externa
+ * y traduce la descripción al español.
+ */
 const paginaDetallesPokemons = async (req, res) => {
     const { id } = req.params;
 
@@ -76,30 +74,24 @@ const paginaDetallesPokemons = async (req, res) => {
         const respuesta = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
         const pokemon = await respuesta.json();
 
-        // --- AÑADE ESTAS LÍNEAS EXACTAMENTE AQUÍ ---
-
-        // 1. Arreglar Imagen
+        // Formateo de datos para la vista (Mapeo de API a Objeto local)
         pokemon.imagen = pokemon.sprites.other['official-artwork'].front_default;
-
-        // 2. Arreglar Nombre
         pokemon.nombre = pokemon.name;
-
-        // 3. ARREGLAR TIPO (¡Esta es la que te falta!)
-        // Cogemos el primer tipo de la lista para que la vista lo entienda
         pokemon.tipo = pokemon.types[0].type.name;
 
-        // -------------------------------------------
-
+        // Obtención de la descripción en español
         const respuestaEspecie = await fetch(pokemon.species.url);
         const especie = await respuestaEspecie.json();
 
         const descripcionObj = especie.flavor_text_entries.find(entry => entry.language.name === 'es');
-        const descripcion = descripcionObj ? descripcionObj.flavor_text.replace(/(\r\n|\n|\r|\f)/gm, " ") : "Sin descripción disponible.";
+        const descripcion = descripcionObj
+            ? descripcionObj.flavor_text.replace(/(\r\n|\n|\r|\f)/gm, " ")
+            : "Sin descripción disponible.";
 
         res.render('pokemon', {
             pagina: `Detalles de ${pokemon.nombre}`,
-            pokemon: pokemon,
-            descripcion: descripcion
+            pokemon,
+            descripcion
         });
 
     } catch (error) {
@@ -107,11 +99,14 @@ const paginaDetallesPokemons = async (req, res) => {
         res.redirect('/pokemons');
     }
 }
-// --- COMENTARIOS ---
+
+/**
+ * Gestión de Comentarios (Lectura y Guardado con Validación)
+ */
 const paginaComentarios = async (req, res) => {
     try {
         const comentarios = await Comentario.findAll({ limit: 6, order: [["id", "DESC"]] });
-        res.render('comentarios', { pagina: 'Comentarios', comentarios: comentarios });
+        res.render('comentarios', { pagina: 'Comentarios', comentarios });
     } catch (err) {
         console.log(err);
         res.render('comentarios', { pagina: 'Comentarios', comentarios: [] });
@@ -121,6 +116,8 @@ const paginaComentarios = async (req, res) => {
 const guardarComentarios = async (req, res) => {
     const { nombre, correo, mensaje } = req.body;
     const errores = [];
+
+    // Validación de campos obligatorios
     if (nombre.trim() === '') errores.push({ mensaje: 'El nombre está vacío' });
     if (correo.trim() === '') errores.push({ mensaje: 'El correo está vacío' });
     if (mensaje.trim() === '') errores.push({ mensaje: 'El mensaje está vacío' });
@@ -129,11 +126,11 @@ const guardarComentarios = async (req, res) => {
         const comentarios = await Comentario.findAll({ limit: 6, order: [["id", "DESC"]] });
         res.render('comentarios', {
             pagina: 'Comentarios',
-            errores: errores,
-            nombre: nombre,
-            correo: correo,
-            mensaje: mensaje,
-            comentarios: comentarios,
+            errores,
+            nombre,
+            correo,
+            mensaje,
+            comentarios,
         })
     } else {
         try {
@@ -145,25 +142,21 @@ const guardarComentarios = async (req, res) => {
     }
 }
 
-
+/**
+ * Procesa la búsqueda del usuario y redirige al detalle del Pokémon
+ */
 const buscador = (req, res) => {
-    // Extraemos el término
     const { termino } = req.body;
 
-    // VALIDACIÓN BLINDADA:
-    // Comprobamos si no existe, si es undefined, o si solo tiene espacios
-    if (!termino || termino === undefined || termino.trim() === "") {
+    // Validación para evitar búsquedas vacías que rompan la URL
+    if (!termino || termino.trim() === "") {
         req.flash('error', 'No has introducido nada en la búsqueda');
-
-        // Usamos una ruta fija en lugar de 'back' para evitar errores de cabeceras
         return res.redirect('/pokemons');
     }
 
-    // Si llegamos aquí, es que hay texto.
-    // IMPORTANTE: Asegúrate de que la ruta /pokemons/nombre exista
     return res.redirect(`/pokemons/${termino.toLowerCase().trim()}`);
 }
-// --- EXPORTACIÓN CORRECTA ---
+
 export {
     paginaInicio,
     paginaNosotros,

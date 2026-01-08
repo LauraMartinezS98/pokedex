@@ -2,27 +2,45 @@ extends ../layout/index
 
 block contenido
     .py-10
-        h1.text-center.my-10.text-4xl.font-extrabold.text-nintendo-red #{pagina}
+        //- Encabezado con estilo Nintendo
+        h1.text-center.mt-5.my-10.text-4xl.font-extrabold(style="color: #E60012; text-transform: uppercase; letter-spacing: 2px;") #{pagina}
 
-        if errores
-            div(class="alert alert-danger text-center w-50 mx-auto")
-                each error in errores
-                    p.mb-0= error.mensaje
+        //- Bloque de Alertas (Éxito y Errores)
+        .row.justify-content-center
+            .col-md-6
+                //- Mensajes de Éxito (Flash)
+                if mensajes && mensajes.exito
+                    each alerta in mensajes.exito
+                        .alert.alert-success.text-center.py-3.mb-4(role="alert" style="border-radius: 15px; border: none; background-color: #d4edda; color: #155724; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.05);")
+                            i.fas.fa-check-circle.mr-2
+                            | #{alerta}
 
+                //- Errores de Validación o Autenticación
+                if errores
+                    .alert.alert-danger.text-center.py-3.mb-4(style="border-radius: 15px; border: none; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.05);")
+                        each error in errores
+                            p.mb-0= error.msg || error.mensaje
+
+        //- Tarjeta de Login
         .row.justify-content-center.mt-5
             .col-md-6
-                .card.shadow
-                    .card-body
+                .card.border-0.shadow(style="border-radius: 20px;")
+                    .card-body.p-5
                         form(method="POST" action="/auth/login")
-                            .form-group.mb-3
-                                label(for="email" class="form-label font-bold text-gray-600") Email
-                                input#email.form-control(type="email" name="email" placeholder="Tu Email de Entrenador")
+                            //- Campo Email
+                            .form-group.mb-4
+                                label(for="email" class="form-label font-weight-bold text-muted" style="font-size: 0.9rem; text-transform: uppercase;") Email de Entrenador
+                                input#email.form-control.form-control-lg(type="email" name="email" placeholder="ejemplo@pokemon.com" style="border-radius: 10px; background-color: #f8f9fa;")
 
-                            .form-group.mb-3
-                                label(for="password" class="form-label font-bold text-gray-600") Contraseña
-                                input#password.form-control(type="password" name="password" placeholder="Tu Password")
+                            //- Campo Password
+                            .form-group.mb-4
+                                label(for="password" class="form-label font-weight-bold text-muted" style="font-size: 0.9rem; text-transform: uppercase;") Contraseña
+                                input#password.form-control.form-control-lg(type="password" name="password" placeholder="Tu Password" style="border-radius: 10px; background-color: #f8f9fa;")
 
-                            input(type="submit" value="Entrar" class="btn btn-danger btn-block w-100")
+                            //- Botón de envío
+                            input(type="submit" value="INICIAR SESIÓN" class="btn btn-danger btn-block btn-lg w-100 rounded-pill" style="background-color: #E60012; border: none; font-weight: 800; letter-spacing: 1px;")
 
-                        .d-flex.justify-content-between.mt-4
-                            a(href="/auth/registro" class="text-secondary text-decoration-none") ¿No tienes cuenta? Regístrate
+                        //- Enlace de navegación
+                        .text-center.mt-4
+                            a(href="/auth/registro" class="text-muted text-decoration-none" style="font-size: 0.9rem;") ¿No tienes cuenta?
+                                span(style="color: #E60012; font-weight: bold;")  Regístrate aquí

@@ -1,7 +1,7 @@
 extends ./layout/index
 
 block contenido
-    //- Diccionario para traducir de Inglés (API) a Español
+    //- Diccionario técnico para la localización de tipos de la PokéAPI al español
     -
         const traducciones = {
             normal: 'Normal', fighting: 'Lucha', flying: 'Volador',
@@ -15,18 +15,16 @@ block contenido
 
     main.container.mt-5
         .row
-            //- COLUMNA IZQUIERDA: IMAGEN
+            //- Sección Visual: Renderizado de imagen HD con efecto de escalado (hover)
             .col-md-5
                 .imagen-wrapper.shadow-sm.mb-4(style="background-color: #f8f9fa; padding: 40px; border-radius: 15px; text-align: center;")
-                    //- Usamos pokemon.imagen (que ahora viene en HD desde el controlador)
                     img.img-fluid(src=pokemon.imagen, alt=`Imagen de ${pokemon.nombre}` style="max-height: 400px; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'")
 
-            //- COLUMNA DERECHA: INFORMACIÓN
+            //- Sección Informativa: Atributos principales extraídos de la API
             .col-md-7
-                //- NOMBRE
                 h1.text-capitalize(style="color: #E60012; font-size: 3rem; font-family: 'Staatliches', cursive;") #{pokemon.nombre}
 
-                //- Nº POKÉDEX
+                //- Identificadores oficiales: Número de Pokédex y Región
                 p.mt-4.d-flex.align-items-center
                     svg.mr-2(xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewbox='0 0 24 24' stroke-width='1.5' stroke='#E60012' fill='none' stroke-linecap='round' stroke-linejoin='round')
                         path(stroke='none' d='M0 0h24v24H0z' fill='none')
@@ -38,7 +36,6 @@ block contenido
                         strong Nº Pokédex Nacional:
                         | #{pokemon.id}
 
-                //- REGIÓN
                 p.d-flex.align-items-center
                     svg.mr-2(xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewbox='0 0 24 24' stroke-width='1.5' stroke='#E60012' fill='none' stroke-linecap='round' stroke-linejoin='round')
                         path(stroke='none' d='M0 0h24v24H0z' fill='none')
@@ -50,14 +47,13 @@ block contenido
 
                 hr.mt-5
 
-                //- SECCIÓN DE TIPOS
+                //- Clasificación elemental del Pokémon
                 .row.mt-4
                     .col-12
                         h5.mb-3(style="font-weight: bold; color: #555;") Tipo:
-                        //- El controlador nos envía 'pokemon.tipo' (ej: 'fire'). Traducimos.
                         span.badge.badge-pill.mr-2.px-3.py-2.text-uppercase(style="background-color: #E60012; color: white; font-size: 0.9rem; letter-spacing: 1px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);") #{traducciones[pokemon.tipo] || pokemon.tipo}
 
-                //- SECCIÓN ESTADÍSTICAS (Sin efecto hover para no marear)
+                //- Métricas físicas: Conversión de unidades API (decímetros/hectogramos) a métricas estándar
                 .row.mt-4
                     .col-6
                         .card.shadow-sm.p-3.text-center(style="border: none; background-color: #f8f9fa; transform: none; transition: none; cursor: default;")
@@ -68,16 +64,16 @@ block contenido
                             h6.text-muted Altura
                             p.font-weight-bold.mb-0 #{pokemon.height ? pokemon.height / 10 : '??'} m
 
-                //- DESCRIPCIÓN
+                //- Descripción biográfica traducida desde el controlador
                 if descripcion
                     h3.mt-5.mb-3 Entrada de la Pokédex
                     p.text-justify(style="font-size: 1.1rem; line-height: 1.6; color: #555;")
                         | #{descripcion}
 
-                //- === ZONA DE ACCIONES (CAPTURAR / LOGIN) ===
+                //- Interfaz de Acción: Control de estado según autenticación de usuario
                 .d-flex.flex-column.mt-5
                     if usuario
-                        //- OPCIÓN A: Usuario Logueado -> Botón Capturar
+                        //- Captura habilitada para usuarios con sesión activa
                         form(action=`/pokemons/capturar/${pokemon.id}` method="POST")
                             button.btn.btn-danger.btn-block.btn-lg.font-weight-bold.shadow-sm(
                                 type="submit"
@@ -88,12 +84,12 @@ block contenido
                                 span(style="font-size: 1.5rem; margin-right: 10px;") ◎
                                 | ¡Capturar Pokémon!
                     else
-                        //- OPCIÓN B: Usuario NO Logueado -> Aviso
+                        //- Restricción de captura para invitados
                         .alert.alert-warning.text-center.shadow-sm(role="alert")
                             strong ¡Alto ahí, entrenador!
                             | Para capturar a #{pokemon.nombre}, necesitas
                             a.font-weight-bold(href="/auth/login" style="color: #856404; text-decoration: underline;") iniciar sesión
                             | .
 
-                    //- Botón Volver (Siempre visible)
+                    //- Navegación de retorno al listado global
                     a.btn.btn-outline-secondary.btn-block.mt-3.rounded-pill(href="/pokemons") Volver a la Pokédex

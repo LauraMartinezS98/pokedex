@@ -4,37 +4,42 @@ block contenido
     main.container.mt-5
         h1.text-center.mt-5 #{pagina}
 
+        //- Sección de lectura de comentarios existentes
         blockquote.text-center.mb-5
-            p.lead
-                | Lee las opiniones de otros coleccionistas de Nintendo
+            p.lead Lee las opiniones de otros entrenadores y coleccionistas
 
-            //- AQUÍ CARGAMOS LAS TARJETAS QUE HICIMOS ANTES
             include ./layout/layout_comentario
 
+        hr.my-5
+
+        //- Sección de formulario para nuevos comentarios
         .row
             .col-md-12
-                h2.d-block.w-100.text-center.mt-5 Deja tu Comentario
+                h2.d-block.w-100.text-center.mb-4 Deja tu Comentario
 
-                //- BLOQUE DE ERRORES (Si el usuario se deja algo en blanco)
+                //- Alertas de validación de formulario
                 if(errores)
-                    each error in errores
-                        .alert.col.alert-danger.text-center.mb-2= error.mensaje
+                    .row.justify-content-center
+                        .col-md-8
+                            each error in errores
+                                .alert.alert-danger.text-center.py-2.mb-2(style="border-radius: 10px; font-weight: bold;")= error.mensaje
 
-        .row.justify-content-center.col.mb-5
+        .row.justify-content-center.mb-5
             .col-md-8
-                //- IMPORTANTE: La acción debe apuntar a la ruta que definimos en router/index.js
-                form(action="/comentarios" method="POST")
-                    .form-group
-                        label(style="font-weight: bold;", for="nombre") Nombre
-                        input#nombre(type="text", placeholder="Tu Nickname", name="nombre", class="form-control", value= nombre)
+                .card.border-0.shadow-sm(style="border-radius: 20px;")
+                    .card-body.p-4
+                        form(action="/comentarios" method="POST")
+                            .form-group.mb-3
+                                label.font-weight-bold(for="nombre") Nombre de Entrenador
+                                input#nombre.form-control(type="text", placeholder="Tu Nickname", name="nombre", value= nombre)
 
-                    .form-group
-                        label(style="font-weight: bold;", for="correo") Correo Electrónico
-                        input#correo(type="text", placeholder="tu@correo.com", name="correo", class="form-control", value= correo)
+                            .form-group.mb-3
+                                label.font-weight-bold(for="correo") Correo Electrónico
+                                input#correo.form-control(type="email", placeholder="tu@correo.com", name="correo", value= correo)
 
-                    .form-group
-                        label(style="font-weight: bold;", for="mensaje") Mensaje
-                        textarea#mensaje(class="form-control", name="mensaje", placeholder="¿Qué te parece esta Pokédex?", rows=3)= mensaje
+                            .form-group.mb-3
+                                label.font-weight-bold(for="mensaje") Mensaje
+                                textarea#mensaje.form-control(name="mensaje", placeholder="¿Qué te parece esta Pokédex?", rows=3)= mensaje
 
-                    //- BOTÓN ROJO NINTENDO
-                    input.btn.btn-nintendo.btn-block(type="submit" value="Enviar Comentario")
+                            //- Botón estilizado con la clase global que definimos
+                            input.btn.btn-danger.btn-block.rounded-pill.mt-4(type="submit" value="Enviar Comentario" style="background-color: #E60012; font-weight: bold;")

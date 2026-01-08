@@ -1,7 +1,9 @@
 import express from 'express';
 const router = express.Router();
 
-// Importar controladores de PÁGINA
+/**
+ * IMPORTACIÓN DE CONTROLADORES
+ */
 import {
     paginaInicio,
     paginaNosotros,
@@ -12,34 +14,37 @@ import {
     buscador,
 } from "../controllers/paginaController.js";
 
-// Importar controladores de USUARIO (Asegúrate de importar soltarPokemon aquí)
 import {
     paginaPerfil,
     capturarPokemon,
-    soltarPokemon // <--- IMPORTANTE
+    soltarPokemon
 } from '../controllers/usuarioController.js';
 
-
-// --- RUTAS PÚBLICAS ---
+/**
+ * RUTAS PÚBLICAS Y NAVEGACIÓN GENERAL
+ */
 router.get('/', paginaInicio);
 router.get('/nosotros', paginaNosotros);
-
-// --- RUTA DEL BUSCADOR  ---
 router.post('/buscador', buscador);
 
-// Rutas de Pokemons
+/**
+ * MÓDULO POKÉMON (Listado y Detalle)
+ */
 router.get('/pokemons', paginaPokemons);
 router.get('/pokemons/:id', paginaDetallesPokemons);
 
-// Rutas de Comentarios
+/**
+ * MÓDULO COMUNIDAD (Testimoniales / Comentarios)
+ */
 router.get('/comentarios', paginaComentarios);
 router.post('/comentarios', guardarComentarios);
 
-// --- RUTAS DE USUARIO ---
+/**
+ * MÓDULO USUARIO Y GESTIÓN DE EQUIPO
+ * Nota: 'soltar' y 'capturar' utilizan POST para mayor seguridad en la BD
+ */
 router.get('/perfil', paginaPerfil);
 router.post('/pokemons/capturar/:id', capturarPokemon);
-
-// ESTA ES LA RUTA QUE TE FALTABA AQUÍ:
 router.post('/pokemons/soltar/:id', soltarPokemon);
 
 export default router;

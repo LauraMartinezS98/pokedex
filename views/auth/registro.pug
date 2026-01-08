@@ -2,31 +2,42 @@ extends ../layout/index
 
 block contenido
     .py-10
-        h1.text-center.my-10 #{pagina}
+        //- Encabezado principal
+        h1.text-center.mt-5.my-10.text-4xl.font-extrabold(style="color: #E60012; text-transform: uppercase; letter-spacing: 2px;") #{pagina}
 
+        //- Sección de Alertas de Validación
         if errores
-            div(class="alert alert-danger text-center w-50 mx-auto")
-                each error in errores
-                    p.mb-0= error.mensaje
+            .row.justify-content-center
+                .col-md-6
+                    .alert.alert-danger.text-center.mb-4(style="border-radius: 15px; border: none; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.05);")
+                        each error in errores
+                            p.mb-0= error.msg || error.mensaje
 
-        .row.justify-content-center.mt-5
+        //- Tarjeta de Formulario de Registro
+        .row.justify-content-center.mt-2
             .col-md-6
-                .card.shadow
-                    .card-body
+                .card.border-0.shadow(style="border-radius: 20px;")
+                    .card-body.p-5
                         form(method="POST" action="/auth/registro")
-                            .form-group.mb-3
-                                label(for="nombre") Nombre de Entrenador
-                                input#nombre.form-control(type="text" name="nombre" placeholder="Tu Nombre" value= usuario ? usuario.nombre : '')
+                            //- Campo Nombre
+                            .form-group.mb-4
+                                label(for="nombre" class="form-label font-weight-bold text-muted" style="font-size: 0.9rem; text-transform: uppercase;") Nombre de Entrenador
+                                input#nombre.form-control.form-control-lg(type="text" name="nombre" placeholder="Tu Nombre" value= usuario ? usuario.nombre : '' style="border-radius: 10px; background-color: #f8f9fa;")
 
-                            .form-group.mb-3
-                                label(for="email") Email
-                                input#email.form-control(type="email" name="email" placeholder="Tu Email" value= usuario ? usuario.email : '')
+                            //- Campo Email
+                            .form-group.mb-4
+                                label(for="email" class="form-label font-weight-bold text-muted" style="font-size: 0.9rem; text-transform: uppercase;") Email
+                                input#email.form-control.form-control-lg(type="email" name="email" placeholder="Tu Email" value= usuario ? usuario.email : '' style="border-radius: 10px; background-color: #f8f9fa;")
 
-                            .form-group.mb-3
-                                label(for="password") Contraseña
-                                input#password.form-control(type="password" name="password" placeholder="Mínimo 6 caracteres")
+                            //- Campo Password
+                            .form-group.mb-4
+                                label(for="password" class="form-label font-weight-bold text-muted" style="font-size: 0.9rem; text-transform: uppercase;") Contraseña
+                                input#password.form-control.form-control-lg(type="password" name="password" placeholder="Mínimo 6 caracteres" style="border-radius: 10px; background-color: #f8f9fa;")
 
-                            input(type="submit" value="Crear Cuenta" class="btn btn-danger btn-block w-100")
+                            //- Botón de Acción
+                            input(type="submit" value="CREAR CUENTA" class="btn btn-danger btn-block btn-lg w-100 rounded-pill" style="background-color: #E60012; border: none; font-weight: 800; letter-spacing: 1px;")
 
-                        .d-flex.justify-content-between.mt-4
-                            a(href="/auth/login" class="text-secondary text-decoration-none") ¿Ya tienes cuenta? Inicia Sesión
+                        //- Enlace de Retorno
+                        .text-center.mt-4
+                            a(href="/auth/login" class="text-muted text-decoration-none" style="font-size: 0.9rem;") ¿Ya tienes cuenta?
+                                span(style="color: #E60012; font-weight: bold;")  Inicia Sesión

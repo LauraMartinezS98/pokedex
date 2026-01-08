@@ -1,17 +1,25 @@
-/* --- FUENTES Y GENERALES (Estilo Nintendo) --- */
+/* * ESTILOS GLOBALES - PokéTool (Nintendo Style)
+ * Arquitectura: Variables > Globales > Componentes > Secciones
+ */
+
 @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Staatliches&display=swap');
 
 :root {
     --nintendo-red: #E60012;
-    --nintendo-gray: #efefef;
+    --nintendo-red-dark: #cc0010;
+    --nintendo-gray: #f7f7f7;
     --dark-text: #333333;
+    --shadow-soft: 0 5px 15px rgba(0,0,0,0.05);
+    --shadow-strong: 0 15px 30px rgba(230, 0, 18, 0.2);
 }
 
+/* --- Base --- */
 body {
     font-family: 'Lato', sans-serif;
     color: var(--dark-text);
-    background-color: #f7f7f7; /* Fondo gris muy suave */
-    background-image: radial-gradient(#e2e2e2 1px, transparent 1px); /* Patrón de puntos */
+    background-color: var(--nintendo-gray);
+    /* Patrón sutil de puntos estilo retro */
+    background-image: radial-gradient(#e2e2e2 1px, transparent 1px);
     background-size: 20px 20px;
 }
 
@@ -21,15 +29,14 @@ h1, h2, h3, .titulo {
     text-transform: uppercase;
 }
 
-/* --- BARRA DE NAVEGACIÓN / HEADER --- */
+/* --- Navegación --- */
 .navegacion {
-    background-color: var(--nintendo-red); /* Fondo Rojo 100% */
+    background-color: var(--nintendo-red);
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     position: relative;
     z-index: 100;
 }
 
-/* Estilo de los enlaces del menú */
 .navegacion .nav-link {
     color: white !important;
     font-family: 'Staatliches', cursive;
@@ -40,19 +47,16 @@ h1, h2, h3, .titulo {
 
 .navegacion .nav-link:hover {
     color: #ffcccc !important;
-    transform: scale(1.1); /* Efecto Pop */
+    transform: scale(1.1);
     text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
-/* --- CORRECCIÓN DEL LOGO --- */
 .navegacion img {
-    max-width: 150px;  /* Tamaño controlado */
-    width: 100%;
+    max-width: 150px;
     height: auto;
-    /* filter: brightness(0) invert(1); <--- ELIMINADO para ver los colores originales */
 }
 
-/* --- TÍTULOS DE SECCIÓN --- */
+/* --- Títulos de Sección --- */
 h2.text-center {
     color: var(--nintendo-red);
     position: relative;
@@ -60,7 +64,6 @@ h2.text-center {
     margin-bottom: 2rem;
 }
 
-/* Línea roja decorativa bajo los títulos */
 h2.text-center::after {
     content: '';
     display: block;
@@ -71,19 +74,19 @@ h2.text-center::after {
     border-radius: 2px;
 }
 
-/* --- TARJETAS DE AMIIBOS (Card Design) --- */
+/* --- Componente: Tarjetas (Cards) --- */
 .card {
     border: none;
     border-radius: 20px;
     background: white;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    box-shadow: var(--shadow-soft);
     overflow: hidden;
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .card:hover {
-    transform: translateY(-10px); /* Flota al pasar el mouse */
-    box-shadow: 0 15px 30px rgba(230, 0, 18, 0.2); /* Sombra roja */
+    transform: translateY(-10px);
+    box-shadow: var(--shadow-strong);
 }
 
 .card-img-top {
@@ -95,7 +98,7 @@ h2.text-center::after {
 }
 
 .card:hover .card-img-top {
-    transform: scale(1.1) rotate(3deg); /* Zoom y giro del muñeco */
+    transform: scale(1.1) rotate(3deg);
 }
 
 .card-body {
@@ -108,19 +111,7 @@ h2.text-center::after {
     font-size: 1.5rem;
 }
 
-.card-text {
-    font-size: 0.9rem;
-    font-weight: 700;
-    color: #888;
-}
-
-/* Iconos SVG rojos */
-svg {
-    stroke: var(--nintendo-red) !important;
-    margin-right: 5px;
-}
-
-/* --- BOTONES (Estilo Pill) --- */
+/* --- Componente: Botones --- */
 .btn-primary, .btn-danger, .btn-success {
     background-color: var(--nintendo-red);
     border: none;
@@ -134,17 +125,12 @@ svg {
 }
 
 .btn-primary:hover, .btn-danger:hover {
-    background-color: #cc0010;
+    background-color: var(--nintendo-red-dark);
     transform: scale(1.05);
     box-shadow: 0 6px 15px rgba(230, 0, 18, 0.4);
 }
 
-.btn-block {
-    width: 80%;
-    margin: 0 auto;
-}
-
-/* --- SECCIÓN DESCUENTO --- */
+/* --- Sección Especial: Descuento / Hero --- */
 .descuento {
     background-color: var(--dark-text);
 }
@@ -168,49 +154,9 @@ svg {
     box-shadow: 5px 5px 0px rgba(0,0,0,0.5);
 }
 
-/* --- FOOTER --- */
-footer {
-    background-color: var(--nintendo-red);
-    color: white;
-    margin-top: 5rem;
-    box-shadow: 0 -4px 10px rgba(0,0,0,0.1);
-    border-top: 5px solid #cc0010;
-}
-
-footer .nav-link {
-    color: white !important;
-    font-family: 'Staatliches', cursive;
-    font-size: 1.3rem;
-    letter-spacing: 1px;
-    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-footer .nav-link:hover {
-    color: #ffe6e6 !important;
-    transform: translateY(-3px) scale(1.1);
-    text-shadow: 0 3px 5px rgba(0,0,0,0.2);
-}
-
-footer .copyright {
-    font-family: 'Lato', sans-serif;
-    font-weight: 700;
-    font-size: 1.1rem;
-    opacity: 0.9;
-    margin-bottom: 0;
-    display: flex;
-    align-items: center;
-}
-
-@media (max-width: 768px) {
-    footer .copyright {
-        justify-content: center;
-        margin-top: 1rem;
-    }
-}
-
-/* --- COMENTARIOS --- */
+/* --- Comentarios (Bubble Chat Style) --- */
 .comentarios .card {
-    border-radius: 15px 15px 15px 0px; /* Forma de burbuja de chat */
+    border-radius: 15px 15px 15px 0px;
     background-color: white;
     border: 2px solid #eee;
 }
@@ -219,4 +165,38 @@ footer .copyright {
     color: var(--nintendo-red);
     font-weight: bold;
     text-transform: uppercase;
+}
+
+/* --- Footer --- */
+footer {
+    background-color: var(--nintendo-red);
+    color: white;
+    margin-top: 5rem;
+    box-shadow: 0 -4px 10px rgba(0,0,0,0.1);
+    border-top: 5px solid var(--nintendo-red-dark);
+}
+
+footer .nav-link {
+    color: white !important;
+    font-family: 'Staatliches', cursive;
+    font-size: 1.3rem;
+    transition: all 0.2s;
+}
+
+footer .nav-link:hover {
+    color: #ffe6e6 !important;
+    transform: translateY(-3px) scale(1.1);
+}
+
+/* --- Utilidades e Iconografía --- */
+svg {
+    stroke: var(--nintendo-red) !important;
+    margin-right: 5px;
+}
+
+@media (max-width: 768px) {
+    footer .copyright {
+        justify-content: center;
+        margin-top: 1rem;
+    }
 }

@@ -3,20 +3,21 @@ import jwt from 'jsonwebtoken';
 import Equipo from '../models/Equipo.js';
 import Pokemon from '../models/Pokemon.js';
 
-// --- Mostrar formulario de Login ---
+/**
+ * GESTIÓN DE AUTENTICACIÓN
+ */
+
 const formularioLogin = (req, res) => {
     res.render('auth/login', {
         pagina: 'Iniciar Sesión'
     });
 }
 
-// --- PROCESAR EL LOGIN ---
 const autenticar = async (req, res) => {
     const { email, password } = req.body;
 
-    // 1. Comprobar si el usuario existe
+    // Verificar existencia del usuario
     const usuario = await Usuario.findOne({ where: { email } });
-
     if(!usuario) {
         return res.render('auth/login', {
             pagina: 'Iniciar Sesión',
@@ -24,7 +25,7 @@ const autenticar = async (req, res) => {
         });
     }
 
-    // 2. Comprobar si la contraseña es correcta
+    // Validar password mediante el método del modelo
     if(!usuario.verificarPassword(password)) {
         return res.render('auth/login', {
             pagina: 'Iniciar Sesión',
@@ -32,7 +33,7 @@ const autenticar = async (req, res) => {
         });
     }
 
-    // 3. Generar el Token JWT
+    // Generación de JWT (Válido por 24h)
     const token = jwt.sign({
         id: usuario.id,
         nombre: usuario.nombre
@@ -40,60 +41,59 @@ const autenticar = async (req, res) => {
         expiresIn: '1d'
     });
 
-    // 4. Guardar cookie y redirigir
-    console.log(`Usuario ${usuario.nombre} logueado correctamente`);
-
+    // Almacenamiento seguro en Cookie (httpOnly evita acceso por JS del cliente)
     return res.cookie('_token', token, {
         httpOnly: true
     }).redirect('/');
 }
 
-// --- Mostrar formulario de Registro ---
 const formularioRegistro = (req, res) => {
     res.render('auth/registro', {
         pagina: 'Crear Cuenta'
     });
 }
 
-// --- Guardar nuevo usuario ---
 const registrar = async (req, res) => {
     const { nombre, email, password } = req.body;
 
-    // Validaciones básicas
-    if(nombre === '' || email === '' || password === '') {
+    // Validaciones de servidor
+    if([nombre, email, password].includes('')) {
         return res.render('auth/registro', {
             pagina: 'Crear Cuenta',
             errores: [{msg: 'Todos los campos son obligatorios'}]
         });
     }
 
-    // Verificar duplicados
+    // Prevención de duplicados
     const existeUsuario = await Usuario.findOne({ where: { email } });
     if(existeUsuario) {
         return res.render('auth/registro', {
             pagina: 'Crear Cuenta',
-            errores: [{msg: 'El Usuario ya está registrado'}]
+            errores: [{msg: 'Ese correo ya está registrado'}]
         });
     }
 
-    // Guardar
     try {
         await Usuario.create({ nombre, email, password });
+        req.flash('exito', 'Has creado tu cuenta correctamente. Ya puedes iniciar sesión.');
         res.redirect('/auth/login');
     } catch (error) {
-        console.log(error);
+        console.error(error);
+        res.render('auth/registro', {
+            pagina: 'Crear Cuenta',
+            errores: [{msg: 'Error interno al crear el usuario'}]
+        });
     }
 }
 
-
-// --- Cerrar Sesión ---
 const cerrarSesion = (req, res) => {
-    res.clearCookie('_token');
-    res.redirect('/auth/login');
+    res.clearCookie('_token').redirect('/auth/login');
 }
 
+/**
+ * GESTIÓN DEL EQUIPO POKÉMON (CRUD)
+ */
 
-// --- GUARDAR POKEMON (CAPTURAR) ---
 const capturarPokemon = async (req, res) => {
     const { id } = req.params;
     const usuarioId = req.usuario.id;
@@ -101,79 +101,84 @@ const capturarPokemon = async (req, res) => {
     try {
         const pokemonIdNum = parseInt(id);
 
-        // --- VALIDACIÓN DE GENERACIÓN ---
+        // 1. VALIDACIÓN DE GENERACIÓN (Kanto: 1 al 151)
         if (pokemonIdNum < 1 || pokemonIdNum > 151) {
-            // Enviamos el mensaje de error a la vista
             req.flash('error', 'Este pokemon no puede ser capturado, no es de la primera generación');
             return res.redirect('/pokemons');
         }
 
-        // --- VALIDACIÓN DE EQUIPO ---
+        // 2. VALIDACIÓN DE DUPLICADOS (Evitar tener el mismo Pokémon dos veces)
+        const existeEnEquipo = await Equipo.findOne({
+            where: { usuarioId, pokemonId: id }
+        });
+
+        if (existeEnEquipo) {
+            req.flash('error', 'Este Pokémon ya forma parte de tu equipo actual');
+            return res.redirect('/pokemons'); // Regresa al detalle del pokemon o lista
+        }
+
+        // 3. VALIDACIÓN DE LÍMITE DE EQUIPO (Máximo 6)
         const conteo = await Equipo.count({ where: { usuarioId } });
         if (conteo >= 6) {
             req.flash('error', 'Tu equipo ya está lleno (máximo 6 Pokémon)');
-            return res.redirect('/perfil');
+            return res.redirect('/pokemons');
         }
 
+        // Si pasa todas las validaciones, se crea el registro
         await Equipo.create({ usuarioId, pokemonId: id });
         res.redirect('/perfil');
 
     } catch (error) {
-        console.log(error);
+        console.error('Error al capturar Pokémon:', error);
         res.redirect('/pokemons');
     }
 }
-// --- SOLTAR POKEMON (BORRAR DEL EQUIPO) ---
+
 const soltarPokemon = async (req, res) => {
     const { id } = req.params;
     const usuarioId = req.usuario.id;
 
     try {
         await Equipo.destroy({
-            where: {
-                usuarioId: usuarioId,
-                pokemonId: id
-            }
+            where: { usuarioId, pokemonId: id }
         });
-
         res.redirect('/perfil');
-
     } catch (error) {
-        console.log(error);
+        console.error(error);
         res.redirect('/perfil');
     }
 }
 
-// --- VER PERFIL (CON ESTADÍSTICAS) ---
-const paginaPerfil = async (req, res) => {
+/**
+ * VISTA DE PERFIL Y ANÁLISIS DE DATOS
+ */
 
+const paginaPerfil = async (req, res) => {
     if(!req.usuario) return res.redirect('/auth/login');
     const usuarioId = req.usuario.id;
 
     try {
-        // 1. Obtener IDs del equipo desde la BD
+        // 1. Recuperar IDs del equipo del usuario
         const equipoRaw = await Equipo.findAll({ where: { usuarioId }, raw: true });
         const pokemonIds = equipoRaw.map(item => item.pokemonId);
 
         let equipo = [];
         if (pokemonIds.length > 0) {
-            // Buscamos los datos básicos (nombre, imagen) en nuestra BD
+            // 2. Obtener datos básicos de DB local
             const pokemonsBD = await Pokemon.findAll({ where: { id: pokemonIds } });
 
-            // 2. ENRIQUECER CON DATOS DE LA API (AQUÍ ESTÁ LA MAGIA)
+            // 3. Enriquecimiento de datos mediante PokéAPI (Stats, Tipos, Peso, Altura)
             equipo = await Promise.all(pokemonsBD.map(async (p) => {
                 try {
-                    // Pedimos datos frescos a la API
                     const respuesta = await fetch(`https://pokeapi.co/api/v2/pokemon/${p.id}`);
                     const data = await respuesta.json();
 
                     return {
-                        ...p.dataValues, // Mantenemos nombre e imagen de la BD
-                        stats: data.stats,   // Stats de combate
-                        // === AÑADIMOS ESTO ===
-                        apiWeight: data.weight, // Peso de la API
-                        apiHeight: data.height, // Altura de la API
-                        apiTypes: data.types    // Tipos de la API (es un array)
+                        ...p.dataValues,
+                        stats: data.stats,
+                        apiWeight: data.weight,
+                        apiHeight: data.height,
+                        apiTypes: data.types
                     };
                 } catch (error) {
                     return p.dataValues;
@@ -181,7 +186,7 @@ const paginaPerfil = async (req, res) => {
             }));
         }
 
-        // --- 3. CÁLCULOS MATEMÁTICOS ---
+        // 4. Procesamiento de Estadísticas del Equipo
         let analisis = {
             total: equipo.length,
             promedioPeso: 0,
@@ -195,48 +200,39 @@ const paginaPerfil = async (req, res) => {
             let sumaAltura = 0;
 
             equipo.forEach(poke => {
-                // Usamos los datos de la API (si existen), si no 0
-                // La API devuelve: Peso en Hectogramos, Altura en Decímetros
                 sumaPeso += poke.apiWeight || 0;
                 sumaAltura += poke.apiHeight || 0;
 
-                // Sacar el tipo principal (La API devuelve un array: [{type:{name:'fire'}}])
-                let tipo = 'unknown';
-                if (poke.apiTypes && poke.apiTypes.length > 0) {
-                    tipo = poke.apiTypes[0].type.name; // Cogemos el primer tipo
-                }
-
-                // Contamos el tipo
-                if(analisis.tipos[tipo]) analisis.tipos[tipo]++;
-                else analisis.tipos[tipo] = 1;
+                const tipo = poke.apiTypes?.[0]?.type?.name || 'unknown';
+                analisis.tipos[tipo] = (analisis.tipos[tipo] || 0) + 1;
             });
 
-            // Promedios: Dividimos entre 10 para pasar a Kg y Metros
+            // Conversión de unidades API (Hectogramos/Decímetros) a Métrico (Kg/M)
             analisis.promedioPeso = (sumaPeso / equipo.length / 10).toFixed(1);
             analisis.promedioAltura = (sumaAltura / equipo.length / 10).toFixed(1);
 
-            // Buscar tipo dominante
+            // Cálculo de moda estadística para el Tipo Dominante
             let maxRep = 0;
             for (const [tipo, cant] of Object.entries(analisis.tipos)) {
                 if (cant > maxRep) { maxRep = cant; analisis.tipoDominante = tipo; }
             }
         }
 
-        // 4. Rellenar huecos vacíos visuales
+        // Normalización del array para la vista (siempre 6 slots)
         while (equipo.length < 6) { equipo.push(null); }
 
         res.render('perfil', {
             pagina: 'Mi Perfil de Entrenador',
-            equipo: equipo,
+            equipo,
             usuario: req.usuario,
-            analisis: analisis
+            analisis
         });
 
     } catch (error) {
-        console.log(error);
+        console.error(error);
         res.render('perfil', {
             pagina: 'Mi Perfil de Entrenador',
-            equipo: [null,null,null,null,null,null],
+            equipo: Array(6).fill(null),
             usuario: req.usuario,
             analisis: {}
         });

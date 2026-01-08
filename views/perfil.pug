@@ -1,7 +1,7 @@
 extends layout/index
 
 block contenido
-    //- Diccionario para traducir los tipos al español
+    //- Configuración local de traducciones para la interfaz
     -
         const traducciones = {
             normal: 'Normal', fighting: 'Lucha', flying: 'Volador', poison: 'Veneno', ground: 'Tierra',
@@ -13,105 +13,82 @@ block contenido
     main.container.mt-5
         .row.justify-content-center
             .col-md-10
-                .card.shadow-lg.border-0
+                .card.shadow-lg.border-0(style="border-radius: 20px; overflow: hidden;")
+                    //- Header estilo Nintendo Switch
                     .card-header.text-white.text-center.py-4(style="background-color: #E60012;")
                         h2.mb-0 Perfil de Entrenador
 
                     .card-body.p-5
-                        //- SECCIÓN DATOS USUARIO
+                        //- Identificación del Entrenador
                         .text-center.mb-4
-                            img.img-fluid.rounded-circle.mb-3(src="https://upload.wikimedia.org/wikipedia/commons/5/53/Pok%C3%A9_Ball_icon.svg" width="100" alt="Avatar")
-                            h3 Hola, #{usuario ? usuario.nombre : 'Entrenador'}!
-                            p.text-muted Gestiona tu equipo para la Liga Pokémon
+                            img.img-fluid.rounded-circle.mb-3(src="https://upload.wikimedia.org/wikipedia/commons/5/53/Pok%C3%A9_Ball_icon.svg" width="80" alt="Avatar")
+                            h3.font-weight-bold ¡Hola, #{usuario ? usuario.nombre : 'Entrenador'}!
+                            p.text-muted Panel de gestión táctica del equipo
 
-                        //- === NUEVO: DASHBOARD DE ESTADÍSTICAS GLOBAL ===
+                        //- Dashboard de Análisis Estadístico
                         if analisis
-                            .row.mb-5
-                                .col-12
-                                    .card.bg-light.border-0.p-3
-                                        h5.text-center.mb-3.text-uppercase.font-weight-bold(style="color: #555; letter-spacing: 1px; font-size: 0.9rem;") Análisis del Equipo
+                            .card.bg-light.border-0.p-4.mb-5(style="border-radius: 15px;")
+                                h5.text-center.mb-4.text-uppercase.font-weight-bold(style="color: #666; font-size: 0.8rem; letter-spacing: 2px;") Estadísticas Globales del Equipo
 
-                                        //- Barra de Progreso (Cuántos tienes de 6)
-                                        .mb-3
-                                            .d-flex.justify-content-between.mb-1
-                                                label.small.font-weight-bold.mb-0 Completado
-                                                span.small.font-weight-bold #{analisis.total} / 6
-                                            .progress(style="height: 10px; border-radius: 10px; background-color: #e9ecef;")
-                                                - var porcentaje = (analisis.total / 6) * 100
-                                                .progress-bar.bg-danger(role="progressbar" style=`width: ${porcentaje}%` aria-valuenow=porcentaje aria-valuemin="0" aria-valuemax="100")
+                                //- Progreso de Captura
+                                .mb-4
+                                    .d-flex.justify-content-between.mb-1
+                                        label.small.font-weight-bold.mb-0 Capacidad del Equipo
+                                        span.small.font-weight-bold #{analisis.total} / 6
+                                    .progress(style="height: 8px; border-radius: 10px;")
+                                        - var porcentaje = (analisis.total / 6) * 100
+                                        .progress-bar.bg-danger(role="progressbar" style=`width: ${porcentaje}%`)
 
-                                        //- Datos numéricos (Tipo, Peso, Altura)
-                                        .row.text-center.mt-4
-                                            .col-md-4.mb-3
-                                                h6.text-muted.small.text-uppercase Tipo Dominante
-                                                span.badge.badge-dark.px-3.py-2.text-uppercase(style="font-size: 0.85rem;") #{traducciones[analisis.tipoDominante] || analisis.tipoDominante}
+                                //- Métricas Comparativas
+                                .row.text-center
+                                    .col-md-4
+                                        h6.text-muted.small.text-uppercase Tipo Dominante
+                                        span.badge.badge-dark.px-3.py-2.text-uppercase #{traducciones[analisis.tipoDominante] || analisis.tipoDominante}
+                                    .col-md-4
+                                        h6.text-muted.small.text-uppercase Peso Promedio
+                                        p.font-weight-bold.mb-0 #{analisis.promedioPeso} kg
+                                    .col-md-4
+                                        h6.text-muted.small.text-uppercase Altura Promedio
+                                        p.font-weight-bold.mb-0 #{analisis.promedioAltura} m
 
-                                            .col-md-4.mb-3
-                                                h6.text-muted.small.text-uppercase Peso Medio
-                                                p.font-weight-bold.mb-0 #{analisis.promedioPeso} kg
+                        hr.my-5
 
-                                            .col-md-4.mb-3
-                                                h6.text-muted.small.text-uppercase Altura Media
-                                                p.font-weight-bold.mb-0 #{analisis.promedioAltura} m
-
-                        hr
-
-                        //- SECCIÓN EQUIPO POKÉMON (6 HUECOS)
+                        //- Gestión de Miembros del Equipo
                         h3.text-center.mb-4.font-weight-bold(style="color: #E60012;") Mi Equipo Actual
 
                         .row.justify-content-center
                             each slot, index in equipo
                                 .col-6.col-md-4.col-lg-2.mb-4
                                     if slot
-                                        //- === HUECO OCUPADO ===
-                                        .card.h-100.shadow-sm.text-center.border-danger.position-relative
-
-                                            //- BOTÓN SOLTAR (X ROJA)
+                                        //- Ranura Ocupada
+                                        .card.h-100.shadow-sm.text-center.border-danger.position-relative(style="border-radius: 15px;")
+                                            //- Acción: Liberar Pokémon
                                             form(action=`/pokemons/soltar/${slot.id}` method="POST" style="position: absolute; top: 5px; right: 5px; z-index: 10;")
-                                                button.btn.btn-danger.rounded-circle.shadow-sm.d-flex.align-items-center.justify-content-center(
-                                                    type="submit"
-                                                    style="width: 25px; height: 25px; padding: 0; font-weight: bold; font-size: 14px; border: 2px solid white;"
-                                                    title="Soltar Pokémon"
-                                                ) ✕
+                                                button.btn.btn-danger.rounded-circle.shadow-sm.p-0(type="submit" style="width: 24px; height: 24px; font-size: 10px; border: 2px solid #fff;") ✕
 
-                                            //- ENLACE E IMAGEN
-                                            a(href=`/pokemons/${slot.id}` style="text-decoration: none; color: inherit; display: block; height: 100%; padding-top: 15px;")
-                                                img.card-img-top.p-2(src=slot.imagen alt=slot.nombre style="object-fit: contain; max-height: 100px;")
+                                            a.text-decoration-none.color-inherit.p-2(href=`/pokemons/${slot.id}`)
+                                                img.card-img-top.p-1(src=slot.imagen alt=slot.nombre style="object-fit: contain; max-height: 80px;")
+                                                .card-body.p-1
+                                                    small.font-weight-bold.text-capitalize.d-block.mb-2= slot.nombre
 
-                                                .card-body.p-2
-                                                    small.font-weight-bold.text-capitalize.d-block.mb-2(style="font-size: 1rem;")= slot.nombre
-
-                                                    //- === NUEVO: BARRAS DE ESTADÍSTICAS INDIVIDUALES ===
+                                                    //- Mini-Gráficos de Atributos
                                                     if slot.stats
-                                                        .stats-container(style="font-size: 0.65rem;")
-                                                            //- HP (Verde)
-                                                            .d-flex.justify-content-between.mb-1
-                                                                span.text-muted HP
-                                                                span.font-weight-bold #{slot.stats[0].base_stat}
-                                                            .progress.mb-2(style="height: 4px; background-color: #e9ecef;")
-                                                                .progress-bar.bg-success(style=`width: ${Math.min(slot.stats[0].base_stat, 150) / 1.5}%`)
-
-                                                            //- ATAQUE (Rojo)
-                                                            .d-flex.justify-content-between.mb-1
-                                                                span.text-muted ATK
-                                                                span.font-weight-bold #{slot.stats[1].base_stat}
-                                                            .progress.mb-2(style="height: 4px; background-color: #e9ecef;")
-                                                                .progress-bar.bg-danger(style=`width: ${Math.min(slot.stats[1].base_stat, 150) / 1.5}%`)
-
-                                                            //- VELOCIDAD (Azul)
-                                                            .d-flex.justify-content-between.mb-1
-                                                                span.text-muted SPD
-                                                                span.font-weight-bold #{slot.stats[5].base_stat}
-                                                            .progress(style="height: 4px; background-color: #e9ecef;")
-                                                                .progress-bar.bg-info(style=`width: ${Math.min(slot.stats[5].base_stat, 150) / 1.5}%`)
-
+                                                        .stats-container.text-left(style="font-size: 0.6rem;")
+                                                            //- Mapeo rápido de HP, ATK y SPD
+                                                            each statIndex, i in [0, 1, 5]
+                                                                - const label = ['HP', 'ATK', 'SPD'][i]
+                                                                - const color = ['bg-success', 'bg-danger', 'bg-info'][i]
+                                                                .d-flex.justify-content-between
+                                                                    span.text-muted= label
+                                                                    span.font-weight-bold= slot.stats[statIndex].base_stat
+                                                                .progress.mb-1(style="height: 3px;")
+                                                                    .progress-bar(class=color style=`width: ${Math.min(slot.stats[statIndex].base_stat, 150) / 1.5}%`)
                                     else
-                                        //- === HUECO VACÍO ===
-                                        .card.h-100.text-center.bg-light(style="border: 2px dashed #ccc; min-height: 150px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#e2e6ea'" onmouseout="this.style.backgroundColor='#f8f9fa'")
-                                            a(href="/pokemons" style="text-decoration: none; color: #aaa; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;")
-                                                div
-                                                    span(style="font-size: 2rem;") +
-                                                    p.mb-0(style="font-size: 0.8rem;") Añadir
+                                        //- Ranura Disponible
+                                        .card.h-100.text-center.bg-light(style="border: 2px dashed #ddd; min-height: 160px; border-radius: 15px;")
+                                            a.d-flex.flex-column.align-items-center.justify-content-center.w-100.h-100.text-decoration-none.text-muted(href="/pokemons")
+                                                span.h2.mb-0 +
+                                                small Añadir
 
-                        .text-center.mt-4
-                            a.btn.btn-outline-danger(href="/pokemons") Ir a la Pokédex para capturar
+                        .text-center.mt-5
+                            a.btn.btn-outline-danger.rounded-pill.px-4(href="/pokemons") Volver a la Pokédex
