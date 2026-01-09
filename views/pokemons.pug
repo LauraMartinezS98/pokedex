@@ -1,5 +1,4 @@
 extends ./layout/index
-include layout/layout_pokemons
 
 block contenido
     main.container.mt-5
@@ -12,7 +11,6 @@ block contenido
                         .alert.alert-danger.text-center.py-3.mb-4(role="alert")
                             | #{alerta}
 
-        //- Dentro de pokemons.pug
         .row.proximos-pokemons
             each pokemon in pokemons
                 include ./layout/layout_pokemons
