@@ -2,41 +2,16 @@ extends ./layout/index
 
 block contenido
     main.container.mt-5
-        //- Título de la sección (Pokédex Nacional)
         h1.text-center.mb-5.font-weight-bold(style="color: #E60012;") #{pagina}
 
-        //- Bloque de Alertas: Errores de búsqueda o restricciones de captura
         if mensajes && mensajes.error
             .row.justify-content-center
                 .col-md-8
                     each alerta in mensajes.error
-                        .alert.alert-danger.text-center.py-3.mb-4(role="alert" style="border-radius: 15px; border: none; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.05);")
-                            i.fas.fa-exclamation-triangle.mr-2
+                        .alert.alert-danger.text-center.py-3.mb-4(role="alert")
                             | #{alerta}
 
-        //- Rejilla de Pokémon
-        .row.rejilla-pokemon
+        .row.proximos-pokemons
             each pokemon in pokemons
-                .col-md-6.col-lg-4.mb-4
-                    //- Tarjeta con efecto hover y altura uniforme
-                    .card.border-0.shadow-sm.h-100(style="border-radius: 20px; overflow: hidden;")
-
-                        //- Contenedor de imagen con fondo neutro para resaltar el artwork
-                        .img-container(style="background-color: #f8f9fa; padding: 25px;")
-                            img.card-img-top(src=pokemon.imagen alt=`Imagen de ${pokemon.nombre}` style="object-fit: contain; height: 200px;")
-
-                        .card-body.d-flex.flex-column.text-center
-                            //- Información básica
-                            h2.card-title.text-capitalize.font-weight-bold(style="color: #333;")= pokemon.nombre
-
-                            p.card-text.text-uppercase.mb-4(style="color: #bbb; font-size: 0.8rem; letter-spacing: 1px;")
-                                | #Pokedéx:
-                                span.ml-1(style="color: #E60012; font-weight: 800;")= pokemon.id
-
-                            //- Botón de acción (Alineado al final mediante mt-auto)
-                            a.btn.btn-danger.btn-block.rounded-pill.mt-auto.py-2(
-                                href=`/pokemons/${pokemon.id}`
-                                style="background-color: #E60012; border: none; font-weight: bold; transition: transform 0.2s;"
-                                onmouseover="this.style.transform='scale(1.05)'"
-                                onmouseout="this.style.transform='scale(1)'"
-                            ) Ver Detalles
+                //- AQUÍ LLAMAMOS AL MOLDE
+                include ./layout_pokemon
