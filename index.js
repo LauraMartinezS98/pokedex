@@ -6,6 +6,8 @@ import jwt from 'jsonwebtoken';
 import db from './config/bd.js';
 import router from './routers/index.js';
 import usuarioRoutes from './routers/usuarioRoutes.js';
+
+// IMPORTANTE: Importamos Relacion.js para activar los modelos y sus vínculos (Many-to-Many)
 import './models/Relacion.js';
 
 //Ajuste para PUG y Carpetas Estáticas
@@ -15,18 +17,17 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Importación de modelos para sincronización
-import './models/Usuario.js';
-import './models/Equipo.js';
-
 const app = express();
 
 /**
  * CONFIGURACIÓN DE BASE DE DATOS
  */
 db.authenticate()
-    .then(() => db.sync())
-    .then(() => console.log('Base de datos conectada y tablas sincronizadas'))
+    .then(() => {
+        // Usamos alter: true para que cree las relaciones (Foreign Keys) automáticamente
+        return db.sync({ alter: true });
+    })
+    .then(() => console.log('Base de datos conectada y tablas/relaciones sincronizadas'))
     .catch(error => console.error('Error de conexión a la BD:', error));
 
 /**
@@ -56,7 +57,6 @@ app.use(express.static('public'));
  * MIDDLEWARE GLOBAL
  * Gestiona variables locales, mensajes de sesión e identidad del usuario
  */
-
 app.use((req, res, next) => {
     // 1. Variables de utilidad para las vistas
     const year = new Date();
@@ -72,7 +72,6 @@ app.use((req, res, next) => {
     if (token) {
         try {
             const decoded = jwt.verify(token, process.env.JWT_SECRET || 'palabraSecreta');
-            // Almacenamos en locals para PUG y en req para los controladores
             res.locals.usuario = decoded;
             req.usuario = decoded;
         } catch (error) {
