@@ -12,7 +12,7 @@ block contenido
                         .alert.alert-danger.text-center.py-3.mb-4(role="alert")
                             | #{alerta}
 
+        //- Dentro de pokemons.pug
         .row.proximos-pokemons
             each pokemon in pokemons
-                //- AQUÍ LLAMAMOS AL MOLDE
-                include ./layout_pokemon
+                include ./layout/layout_pokemons
