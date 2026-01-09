@@ -6,6 +6,7 @@ import jwt from 'jsonwebtoken';
 import db from './config/bd.js';
 import router from './routers/index.js';
 import usuarioRoutes from './routers/usuarioRoutes.js';
+import './models/Relacion.js';
 
 //Ajuste para PUG y Carpetas Estáticas
 import { fileURLToPath } from 'url';

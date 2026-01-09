@@ -1,17 +1,28 @@
-//- layout_pokemon.pug
-.col-md-6.col-lg-4.mb-4
-    .card.shadow-sm(style="border: none; transition: transform 0.3s;")
-        .imagen-wrapper(style="background-color: #f8f9fa; text-align: center; padding: 20px;")
-            img.card-img-top(src=pokemon.imagen alt=`Imagen de ${pokemon.nombre}` style="height: 250px; width: auto; object-fit: contain;")
+.row.proximos-pokemons
+    each pokemon in pokemons
+        .col-md-6.col-lg-4.mb-4
+            .card.shadow-sm(style="border: none; transition: transform 0.3s;")
+                //- 1. IMAGEN
+                .imagen-wrapper(style="background-color: #f8f9fa; text-align: center; padding: 20px;")
+                    //- Usamos pokemon.imagen
+                    img.card-img-top(src=pokemon.imagen alt=`Imagen de ${pokemon.nombre}` style="height: 250px; width: auto; object-fit: contain;")
 
-        .card-body
-            h2.text-center.mb-3.text-capitalize(style="font-size: 1.5rem; font-weight: bold;")= pokemon.nombre
-            p.text-center
-                svg.icon.icon-tabler.icon-tabler-hash(xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewbox='0 0 24 24' stroke-width='1.5' stroke='#E60012' fill='none' stroke-linecap='round' stroke-linejoin='round')
-                    path(stroke='none' d='M0 0h24v24H0z' fill='none')
-                    line(x1='5' y1='9' x2='19' y2='9')
-                    line(x1='5' y1='15' x2='19' y2='15')
-                    line(x1='11' y1='4' x2='7' y2='20')
-                    line(x1='17' y1='4' x2='13' y2='20')
-                |  Pokédex Nº: #{pokemon.id}
-            a(href=`/pokemons/${pokemon.id}`, class="btn btn-danger btn-block mt-4") Ver Ficha
+                .card-body
+                    //- 2. TÍTULO: Agregamos .text-capitalize para que la primera letra sea mayúscula (pikachu -> Pikachu)
+                    h2.text-center.mb-3.text-capitalize(style="font-size: 1.5rem; font-weight: bold;")= pokemon.nombre
+
+                    //- DATOS: Mostramos el ID de la Pokédex
+                    p.text-center
+                        //- Icono de Pokédex / Hash
+                        svg.icon.icon-tabler.icon-tabler-hash(xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewbox='0 0 24 24' stroke-width='1.5' stroke='#E60012' fill='none' stroke-linecap='round' stroke-linejoin='round')
+                            path(stroke='none' d='M0 0h24v24H0z' fill='none')
+                            line(x1='5' y1='9' x2='19' y2='9')
+                            line(x1='5' y1='15' x2='19' y2='15')
+                            line(x1='11' y1='4' x2='7' y2='20')
+                            line(x1='17' y1='4' x2='13' y2='20')
+
+                        |  Pokédex Nº: #{pokemon.id}
+
+                    //- 3. BOTÓN
+                    //- Apuntamos al ID para el futuro detalle
+                    a(href=`/pokemons/${pokemon.id}`, class="btn btn-danger btn-block mt-4") Ver Ficha
