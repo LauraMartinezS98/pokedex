@@ -2,23 +2,14 @@ import Usuario from './Usuario.js';
 import Pokemon from './Pokemon.js';
 import Equipo from './Equipo.js';
 
-// Establecer la relación Muchos a Muchos
-// Un Usuario tiene muchos Pokemons a través de Equipo
-Usuario.belongsToMany(Pokemon, {
-    through: Equipo,
-    foreignKey: 'usuarioId', // La llave en la tabla Equipo que apunta a Usuario
-    otherKey: 'pokemonId'    // La llave en la tabla Equipo que apunta a Pokemon
-});
+// Relación Muchos a Muchos entre Usuario y Pokemon a través de Equipo
+Usuario.belongsToMany(Pokemon, { through: Equipo, foreignKey: 'usuarioId' });
+Pokemon.belongsToMany(Usuario, { through: Equipo, foreignKey: 'pokemonId' });
 
-// Un Pokemon puede ser de muchos Usuarios
-Pokemon.belongsToMany(Usuario, {
-    through: Equipo,
-    foreignKey: 'pokemonId',
-    otherKey: 'usuarioId'
-});
+// Definición de pertenencia para que Equipo pueda usar belongsTo (opcional pero recomendado)
+Equipo.belongsTo(Usuario, { foreignKey: 'usuarioId' });
+Equipo.belongsTo(Pokemon, { foreignKey: 'pokemonId' });
 
 export {
-    Usuario,
-    Pokemon,
     Equipo
-}
+};
