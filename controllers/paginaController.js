@@ -35,7 +35,7 @@ const paginaPokemons = async (req, res) => {
     try {
         let pokemons = await Pokemon.findAll();
 
-        // Lógica de Sembrado Automático (First run)
+        // Lógica de Sembrado Automático
         if (pokemons.length === 0) {
             const url = 'https://pokeapi.co/api/v2/pokemon?limit=151';
             const respuesta = await fetch(url);
