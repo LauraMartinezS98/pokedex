@@ -1,28 +1,26 @@
-.row.proximos-pokemons
+//- views/layouts/layout_pokemon.pug
+.row.rejilla-pokemon
     each pokemon in pokemons
         .col-md-6.col-lg-4.mb-4
-            .card.shadow-sm(style="border: none; transition: transform 0.3s;")
-                //- 1. IMAGEN
-                .imagen-wrapper(style="background-color: #f8f9fa; text-align: center; padding: 20px;")
-                    //- Usamos pokemon.imagen
-                    img.card-img-top(src=pokemon.imagen alt=`Imagen de ${pokemon.nombre}` style="height: 250px; width: auto; object-fit: contain;")
+            .card.border-0.shadow-sm.h-100(style="border-radius: 20px; overflow: hidden;")
 
-                .card-body
-                    //- 2. TÍTULO: Agregamos .text-capitalize para que la primera letra sea mayúscula (pikachu -> Pikachu)
-                    h2.text-center.mb-3.text-capitalize(style="font-size: 1.5rem; font-weight: bold;")= pokemon.nombre
+                .img-container(style="background-color: #f8f9fa; padding: 25px;")
+                    img.card-img-top(
+                        src=pokemon.imagen
+                        alt=`Imagen de ${pokemon.nombre}`
+                        style="object-fit: contain; height: 200px;"
+                    )
 
-                    //- DATOS: Mostramos el ID de la Pokédex
-                    p.text-center
-                        //- Icono de Pokédex / Hash
-                        svg.icon.icon-tabler.icon-tabler-hash(xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewbox='0 0 24 24' stroke-width='1.5' stroke='#E60012' fill='none' stroke-linecap='round' stroke-linejoin='round')
-                            path(stroke='none' d='M0 0h24v24H0z' fill='none')
-                            line(x1='5' y1='9' x2='19' y2='9')
-                            line(x1='5' y1='15' x2='19' y2='15')
-                            line(x1='11' y1='4' x2='7' y2='20')
-                            line(x1='17' y1='4' x2='13' y2='20')
+                .card-body.d-flex.flex-column.text-center
+                    h2.card-title.text-capitalize.font-weight-bold(style="color: #333;")= pokemon.nombre
 
-                        |  Pokédex Nº: #{pokemon.id}
+                    p.card-text.text-uppercase.mb-4(style="color: #bbb; font-size: 0.8rem; letter-spacing: 1px;")
+                        | #Pokedéx:
+                        span.ml-1(style="color: #E60012; font-weight: 800;")= pokemon.id
 
-                    //- 3. BOTÓN
-                    //- Apuntamos al ID para el futuro detalle
-                    a(href=`/pokemons/${pokemon.id}`, class="btn btn-danger btn-block mt-4") Ver Ficha
+                    a.btn.btn-danger.btn-block.rounded-pill.mt-auto.py-2(
+                        href=`/pokemons/${pokemon.id}`
+                        style="background-color: #E60012; border: none; font-weight: bold; transition: transform 0.2s;"
+                        onmouseover="this.style.transform='scale(1.05)'"
+                        onmouseout="this.style.transform='scale(1)'"
+                    ) Ver Detalles
