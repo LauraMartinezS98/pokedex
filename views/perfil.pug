@@ -62,10 +62,12 @@ block contenido
                                     if slot
                                         //- Ranura Ocupada
                                         .card.h-100.shadow-sm.text-center.border-danger.position-relative(style="border-radius: 15px;")
-                                            //- Acción: Liberar Pokémon
-                                            form(action=`/pokemons/soltar/${slot.id}` method="POST" style="position: absolute; top: 5px; right: 5px; z-index: 10;")
+
+                                            //- Se añade /auth/ a la ruta para que coincida con tu Router
+                                            form(action=`/auth/soltar/${slot.id}` method="GET" style="position: absolute; top: 5px; right: 5px; z-index: 10;")
                                                 button.btn.btn-danger.rounded-circle.shadow-sm.p-0(type="submit" style="width: 24px; height: 24px; font-size: 10px; border: 2px solid #fff;") ✕
 
+                                            //- Si los detalles son públicos, se mantiene /pokemons
                                             a.text-decoration-none.color-inherit.p-2(href=`/pokemons/${slot.id}`)
                                                 img.card-img-top.p-1(src=slot.imagen alt=slot.nombre style="object-fit: contain; max-height: 80px;")
                                                 .card-body.p-1
@@ -74,7 +76,6 @@ block contenido
                                                     //- Mini-Gráficos de Atributos
                                                     if slot.stats
                                                         .stats-container.text-left(style="font-size: 0.6rem;")
-                                                            //- Mapeo rápido de HP, ATK y SPD
                                                             each statIndex, i in [0, 1, 5]
                                                                 - const label = ['HP', 'ATK', 'SPD'][i]
                                                                 - const color = ['bg-success', 'bg-danger', 'bg-info'][i]

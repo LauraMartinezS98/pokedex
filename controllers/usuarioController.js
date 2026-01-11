@@ -70,7 +70,7 @@ const registrar = async (req, res) => {
     try {
         await Usuario.create({ nombre, email, password });
         req.flash('exito', 'Has creado tu cuenta correctamente. Ya puedes iniciar sesión.');
-        res.redirect('/auth/login'); // Cambio aplicado: añadido /auth
+        res.redirect('/auth/login');
     } catch (error) {
         console.error(error);
         res.render('auth/registro', {
@@ -81,7 +81,7 @@ const registrar = async (req, res) => {
 }
 
 const cerrarSesion = (req, res) => {
-    res.clearCookie('_token').redirect('/auth/login'); // Cambio aplicado: añadido /auth
+    res.clearCookie('_token').redirect('/auth/login');
 }
 
 /**
@@ -94,7 +94,7 @@ const capturarPokemon = async (req, res) => {
     // Validación de sesión activa
     if (!req.usuario) {
         req.flash('error', 'Debes iniciar sesión para capturar un Pokémon');
-        return res.redirect('/auth/login'); // Cambio aplicado: añadido /auth
+        return res.redirect('/auth/login');
     }
 
     const usuarioId = req.usuario.id;
@@ -119,11 +119,11 @@ const capturarPokemon = async (req, res) => {
         const conteo = await Equipo.count({ where: { usuarioId } });
         if (conteo >= 6) {
             req.flash('error', 'Tu equipo está lleno (máximo 6)');
-            return res.redirect('/auth/perfil'); // Cambio aplicado: añadido /auth
+            return res.redirect('/auth/perfil');
         }
 
         await Equipo.create({ usuarioId, pokemonId: id });
-        res.redirect('/auth/perfil'); // Cambio aplicado: añadido /auth
+        res.redirect('/auth/perfil');
 
     } catch (error) {
         console.error('Error en capturarPokemon:', error);
@@ -139,10 +139,10 @@ const soltarPokemon = async (req, res) => {
         await Equipo.destroy({
             where: { usuarioId, pokemonId: id }
         });
-        res.redirect('/auth/perfil'); // Cambio aplicado: añadido /auth
+        res.redirect('/auth/perfil');
     } catch (error) {
         console.error(error);
-        res.redirect('/auth/perfil'); // Cambio aplicado: añadido /auth
+        res.redirect('/auth/perfil');
     }
 }
 
@@ -151,7 +151,7 @@ const soltarPokemon = async (req, res) => {
  */
 
 const paginaPerfil = async (req, res) => {
-    if(!req.usuario) return res.redirect('/auth/login'); // Cambio aplicado: añadido /auth
+    if(!req.usuario) return res.redirect('/auth/login');
     const usuarioId = req.usuario.id;
 
     try {
