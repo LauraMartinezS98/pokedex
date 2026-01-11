@@ -40,7 +40,7 @@ const autenticar = async (req, res) => {
 
     return res.cookie('_token', token, {
         httpOnly: true
-    }).redirect('/');
+    }).redirect('/'); // Redirige a la página de inicio pública
 }
 
 const formularioRegistro = (req, res) => {
@@ -70,7 +70,7 @@ const registrar = async (req, res) => {
     try {
         await Usuario.create({ nombre, email, password });
         req.flash('exito', 'Has creado tu cuenta correctamente. Ya puedes iniciar sesión.');
-        res.redirect('/auth/login');
+        res.redirect('/auth/login'); // Cambio aplicado: añadido /auth
     } catch (error) {
         console.error(error);
         res.render('auth/registro', {
@@ -81,7 +81,7 @@ const registrar = async (req, res) => {
 }
 
 const cerrarSesion = (req, res) => {
-    res.clearCookie('_token').redirect('/auth/login');
+    res.clearCookie('_token').redirect('/auth/login'); // Cambio aplicado: añadido /auth
 }
 
 /**
@@ -94,7 +94,7 @@ const capturarPokemon = async (req, res) => {
     // Validación de sesión activa
     if (!req.usuario) {
         req.flash('error', 'Debes iniciar sesión para capturar un Pokémon');
-        return res.redirect('/auth/login');
+        return res.redirect('/auth/login'); // Cambio aplicado: añadido /auth
     }
 
     const usuarioId = req.usuario.id;
@@ -102,13 +102,11 @@ const capturarPokemon = async (req, res) => {
     try {
         const pokemonIdNum = parseInt(id);
 
-        // Restricción por generación (Kanto)
         if (pokemonIdNum < 1 || pokemonIdNum > 151) {
             req.flash('error', 'Este Pokémon no es de la primera generación');
             return res.redirect('/pokemons');
         }
 
-        // Comprobar si ya existe en el equipo (Evitar duplicados)
         const existeEnEquipo = await Equipo.findOne({
             where: { usuarioId, pokemonId: id }
         });
@@ -118,16 +116,14 @@ const capturarPokemon = async (req, res) => {
             return res.redirect('/pokemons');
         }
 
-        // Validación de límite de equipo (Máximo 6)
         const conteo = await Equipo.count({ where: { usuarioId } });
         if (conteo >= 6) {
             req.flash('error', 'Tu equipo está lleno (máximo 6)');
-            return res.redirect('/perfil');
+            return res.redirect('/auth/perfil'); // Cambio aplicado: añadido /auth
         }
 
-        // Registro de captura exitosa
         await Equipo.create({ usuarioId, pokemonId: id });
-        res.redirect('/perfil');
+        res.redirect('/auth/perfil'); // Cambio aplicado: añadido /auth
 
     } catch (error) {
         console.error('Error en capturarPokemon:', error);
@@ -143,10 +139,10 @@ const soltarPokemon = async (req, res) => {
         await Equipo.destroy({
             where: { usuarioId, pokemonId: id }
         });
-        res.redirect('/perfil');
+        res.redirect('/auth/perfil'); // Cambio aplicado: añadido /auth
     } catch (error) {
         console.error(error);
-        res.redirect('/perfil');
+        res.redirect('/auth/perfil'); // Cambio aplicado: añadido /auth
     }
 }
 
@@ -155,7 +151,7 @@ const soltarPokemon = async (req, res) => {
  */
 
 const paginaPerfil = async (req, res) => {
-    if(!req.usuario) return res.redirect('/auth/login');
+    if(!req.usuario) return res.redirect('/auth/login'); // Cambio aplicado: añadido /auth
     const usuarioId = req.usuario.id;
 
     try {
