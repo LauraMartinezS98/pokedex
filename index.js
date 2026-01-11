@@ -95,7 +95,7 @@ app.use((req, res, next) => {
 /**
  * DEFINICIÓN DE RUTAS
  */
-app.use('/', router);        // Rutas generales y de Pokédex
+app.use('/', usuarioRoutes);        // Rutas generales y de Pokédex
 app.use('/auth', usuarioRoutes); // Rutas de login, registro y equipo
 
 app.listen(port, () => {
