@@ -74,7 +74,7 @@ block contenido
                 .d-flex.flex-column.mt-5
                     if usuario
                         //- Captura habilitada para usuarios con sesión activa
-                        form(action=`/pokemons/capturar/${pokemon.id}` method="POST")
+                        form(action=`/auth/pokemons/capturar/${pokemon.id}` method="POST")
                             button.btn.btn-danger.btn-block.btn-lg.font-weight-bold.shadow-sm(
                                 type="submit"
                                 style="border-radius: 50px; text-transform: uppercase; letter-spacing: 2px; transition: transform 0.2s;"
