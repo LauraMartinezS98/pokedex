@@ -6,7 +6,7 @@ import Equipo from './Equipo.js';
 Usuario.belongsToMany(Pokemon, { through: Equipo, foreignKey: 'usuarioId' });
 Pokemon.belongsToMany(Usuario, { through: Equipo, foreignKey: 'pokemonId' });
 
-// Definición de pertenencia para que Equipo pueda usar belongsTo (opcional pero recomendado)
+// Define explícitamente las llaves foráneas
 Equipo.belongsTo(Usuario, { foreignKey: 'usuarioId' });
 Equipo.belongsTo(Pokemon, { foreignKey: 'pokemonId' });
 
