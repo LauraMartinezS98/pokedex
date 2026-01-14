@@ -168,7 +168,9 @@ const paginaPerfil = async (req, res) => {
                     const data = await respuesta.json();
 
                     return {
+                        //Los datos de la BBDD
                         ...p.dataValues,
+                        //Los datos de la API
                         stats: data.stats,
                         apiWeight: data.weight,
                         apiHeight: data.height,

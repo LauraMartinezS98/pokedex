@@ -1,5 +1,8 @@
 import express from 'express';
+//Para transformar la cookie de texto a un objeto js
 import cookieParser from 'cookie-parser';
+//Crea un espacio reservado en la memoria del servidor para cada visitante.
+//Genera un ID único para el usuario y lo vincula con sus datos mientras navega. (Necesatio para flash)
 import session from 'express-session';
 import flash from 'connect-flash';
 import jwt from 'jsonwebtoken';
