@@ -46,6 +46,9 @@ Este proyecto está configurado para ser desplegado fácilmente:
 3. En la sección "Build and deployment", selecciona la rama `main` y pulsa **Save**.
 4. ¡Tu Pokédex estará disponible en `https://lauramartinezs98.github.io/pokedex/`!
 
+## Aplicación desplegada en Render
+https://pokedex-2rt4.onrender.com
+
 ## 🔮 Próximas Mejoras
 
 - [ ] Añadir filtro por regiones/generaciones.
